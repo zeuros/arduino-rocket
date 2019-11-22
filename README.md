@@ -1,4 +1,7 @@
+# Scénario immersoft: fusée
 
+## But
+ - Connecter les parties de fusée et activer sa mise à feu grâce à la "mallette de paramétrage (Russe)"
 
 
 ### libs: 
