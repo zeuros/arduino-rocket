@@ -11,19 +11,34 @@ void doLEDs(uint8_t value) {
     }
 }
 
+// 
 void blingBling() {
 
     tm.reset();
-    tm.displayText("UUALLLAH");
+    tm.displayText("HAHAHAHA");
     
+    int speed = 3;// + = +lent
+    int steps = 18;// + = +fluide & +lent
+
     for ( int i = 0 ; i < 7 ; i++ ) {
-        for (uint8_t brightness = 5; brightness-- > 0 ;) {
-            tm.brightness(brightness);
-            delay(20);
+        // decroissant
+        for (uint8_t brightness = 5; brightness-- > 1 ;) {
+            //sub steps
+            for(int j=0; j<steps; j++){
+                tm.brightness(brightness);
+                delay((speed * (steps-j)) / steps);
+                tm.brightness(brightness-1);
+                delay((speed * j) / steps);
+            }
         }
         for (uint8_t brightness = 0; brightness < 5; brightness++) {
-            tm.brightness(brightness);
-            delay(20);
+            //sub steps
+            for(int j=0; j<steps; j++){
+                tm.brightness(brightness);
+                delay((speed * (steps-j)) / steps);
+                tm.brightness(brightness+1);
+                delay((speed * j) / steps);
+            }
         }
     }
 }
