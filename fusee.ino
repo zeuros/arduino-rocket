@@ -8,6 +8,7 @@
 
 // init afficheur
 TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM);
+
 auto timer = timer_create_default();
 
 const int PIN_COUNT_RESERVOIR = 3;
@@ -27,11 +28,13 @@ const int PIN_FUMIGENE = 6;
 
 int neymanValues[10] = {1024};// par défaut, le pin est en l'air (> 0)
 int analVal = 0;
-bool neymanActive;
-bool buttonPressed;
+bool neymanActive      = false;
+bool buttonPressed     = false;
+bool elementsConnectes = false;// tous les elements de la fusee sont connectée entre eux
+bool reservoirPlein    = false;// UNUSED
+bool codesMatch        = false;
 char* code       = "00000000";// code de départ
 char* secretCode = retrieveSecretCode();
-bool codesMatch  = false;
 
 bool buttonHold[8] = {false};
 
@@ -54,6 +57,7 @@ void hauteurReservoirCarburant() {
         // Lecture et Affichage AX
         analVal = analogRead(PINS_RESERVOIR[pinNumber]);
         digitalWrite(PINS_LED_RESERVOIR[pinNumber], HIGH);
+        // @TODO: A RETAPER 
         // Serial.print(String(pinNumber) + ":" + analVal);  Serial.print("\t");
     }
     // Serial.print("\n");
@@ -65,16 +69,11 @@ void hauteurReservoirCarburant() {
 /* ------------------------------------ elements fusee ------------------------------------ */
 
 
-void setupPinsElements() {
-    for ( int i = 0 ; i < PIN_COUNT_ELEMENTS ; i++) {
-        pinMode(PINS_LED_ELEMENTS[i], OUTPUT);
-    }
-}
 
 // Lis et affiche le nombre de parties de fusée connectées
 // Plus il y a d'éléments connectés, plus la résistance baisse (éléments en parallèle)
 // donc plus on connecte d'éléments, plus la valeur lue sera faible
-void connectionPartiesFusee() {
+void connectionElementsFusee() {
 
     analVal = analogRead(PIN_READ_ELEMENTS);
 
@@ -82,11 +81,15 @@ void connectionPartiesFusee() {
     digitalWrite(PINS_LED_ELEMENTS[1], analVal < 300 ? HIGH : LOW);// seuil: 165
     digitalWrite(PINS_LED_ELEMENTS[2], analVal < 100 ? HIGH : LOW);// seuil: 89
     digitalWrite(PINS_LED_ELEMENTS[3], analVal < 70 ? HIGH : LOW);// seuil: 56
+
+    elementsConnectes = analVal < 70; // @TODO: A RETAPER 
 }
 
 /* ------------------------------------ Fumigène ------------------------------------ */
 
-/* PAS DE CODE POUR L'INSTANT */
+void ignite () {
+    digitalWrite(PIN_FUMIGENE, HIGH);
+}
 
 
 
@@ -96,13 +99,12 @@ void connectionPartiesFusee() {
 
 
 
+// le neyman n'a pas de pull-up/down => fait la moyenne de la sortie pour lisser les valeurs induites (patte en l'air)
 void neyman() {
-    neymanActive  = average(neymanValues, analogRead(PIN_NEYMAN)) > 50;// le neyman n'a pas de pull-up/down => moyenne de la sortie
-
-    Serial.print(String("Neyman val: ")+neymanActive);
+    neymanActive = average(neymanValues, analogRead(PIN_NEYMAN)) > 50;
 }
 
-void boutonSetCode() {
+void boutonAdminMemoriserCode() {
     bool setCode = !(analogRead(PIN_BOUTON_SET_CODE) > 500);
 
     if ( setCode ) {
@@ -113,36 +115,29 @@ void boutonSetCode() {
     }
 }
 
-// gère l'afficheur 7 segments & ses boutons.
-void codeSecret() {
+// incrément des chiffres du code, affichage de la LED correspondante 
+void changeChiffreCode () {
+    uint8_t buttons = tm.readButtons();
 
+    ajouteChiffre(buttons, code);
+    
+    // les leds sont controlées par l'appui bouton ou la validité du code entré (blink)
+    if ( !codesMatch ) {
+        doLEDs(buttons);  
+    }
 }
 
-void successTone() {
-    tone(PIN_BUZZER, 3000, 5000);
+void afficheVoyantLaunch() {
+    digitalWrite(PIN_LAUNCH, HIGH);
 }
-
-void failTones() {
-//  failTone();
-    // faire le second bip après 200ms
-  timer.in(200, failTone);
-}
-
-void failTone(void *) {
-    tone(PIN_BUZZER, 1000, 400);
-}
-
-
-
-
-
-
 
 
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------ Main ---------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 void setup() {
+
+    blingBling(); // lel
 
     /**** fusée ****/
     pinMode(PIN_FUMIGENE, OUTPUT);
@@ -163,7 +158,6 @@ void setup() {
     pinMode(PIN_BOUTON_SET_CODE, INPUT_PULLUP);
     pinMode(PIN_NEYMAN, INPUT_PULLUP);
 
-    blingBling();
 
     Serial.begin(9600);
 
@@ -173,21 +167,24 @@ void loop() {
 
     // fusée
     hauteurReservoirCarburant();
-    connectionPartiesFusee();
+    
+    connectionElementsFusee();
     
     // mallette
 
-    uint8_t buttons = tm.readButtons();
-    ajouteChiffre(buttons, code);
-    
-    
-    if ( !codesMatch ) {
-        doLEDs(buttons);  
-    }
+    changeChiffreCode();
 
-    boutonSetCode();
+    boutonAdminMemoriserCode();
+
     neyman();
     
+    if ( elementsConnectes && reservoirPlein && codesMatch ) {
+        afficheVoyantLaunch();
+        if ( neymanActive ){
+            ignite();
+        }
+    }
+
     timer.tick();
 }
 
