@@ -26,12 +26,11 @@ const int PIN_NEYMAN = A7;// Pin Lecture analogique seulement !
 
 const int PIN_FUMIGENE = 6;
 
-int neymanValues[10] = {1024};// par défaut, le pin est en l'air (> 0)
-int analVal = 0;
+bool niveauAtteint[3]  = {false};
 bool neymanActive      = false;
 bool buttonPressed     = false;
 bool elementsConnectes = false;// tous les elements de la fusee sont connectée entre eux
-bool reservoirPlein    = false;// UNUSED
+bool reservoirPlein    = false;
 bool codesMatch        = false;
 char* code       = "00000000";// code de départ
 char* secretCode = retrieveSecretCode();
@@ -52,14 +51,26 @@ bool buttonHold[8] = {false};
 
 // Lis et affiche la hauteur de carburant
 void hauteurReservoirCarburant() {
+    static int hauteurEauValues[3] = {0};// par défaut, le pin est en l'air (> 0)
+    int nombreNiveauAtteint = 0;
+
     // Lecture et Affichage A0-A2
     for ( int pinNumber = 0 ; pinNumber < PIN_COUNT_RESERVOIR ; pinNumber++) {
-        // Lecture et Affichage AX
-        analVal = analogRead(PINS_RESERVOIR[pinNumber]);
-        digitalWrite(PINS_LED_RESERVOIR[pinNumber], HIGH);
-        // @TODO: A RETAPER 
-        // Serial.print(String(pinNumber) + ":" + analVal);  Serial.print("\t");
+        // Lecture et Affichage
+
+        hauteurEauValues[pinNumber] = smooth(hauteurEauValues[pinNumber], analogRead(PINS_RESERVOIR[pinNumber]));
+        
+        niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] > 50;
+        
+        digitalWrite(PINS_LED_RESERVOIR[pinNumber], niveauAtteint[pinNumber] ? HIGH : LOW);
+
+        nombreNiveauAtteint++;
+        
+        // Serial.print(String(pinNumber) + ":" + hauteurEauValues[pinNumber] + "\t");
     }
+
+    reservoirPlein = ( nombreNiveauAtteint == PIN_COUNT_RESERVOIR );
+
     // Serial.print("\n");
 }
 
@@ -75,19 +86,19 @@ void hauteurReservoirCarburant() {
 // donc plus on connecte d'éléments, plus la valeur lue sera faible
 void connectionElementsFusee() {
 
-    analVal = analogRead(PIN_READ_ELEMENTS);
+    elementsSmoothed = smooth( elementsSmoothed , analogRead(PIN_READ_ELEMENTS));
 
-    digitalWrite(PINS_LED_ELEMENTS[0], analVal < 400 ? HIGH : LOW);// seuil: 346
-    digitalWrite(PINS_LED_ELEMENTS[1], analVal < 300 ? HIGH : LOW);// seuil: 165
-    digitalWrite(PINS_LED_ELEMENTS[2], analVal < 100 ? HIGH : LOW);// seuil: 89
-    digitalWrite(PINS_LED_ELEMENTS[3], analVal < 70 ? HIGH : LOW);// seuil: 56
+    digitalWrite(PINS_LED_ELEMENTS[0], elementsSmoothed < 400 ? HIGH : LOW);// seuil: 346
+    digitalWrite(PINS_LED_ELEMENTS[1], elementsSmoothed < 300 ? HIGH : LOW);// seuil: 165
+    digitalWrite(PINS_LED_ELEMENTS[2], elementsSmoothed < 100 ? HIGH : LOW);// seuil: 89
+    digitalWrite(PINS_LED_ELEMENTS[3], elementsSmoothed < 70 ? HIGH : LOW);// seuil: 56
 
     elementsConnectes = analVal < 70; // @TODO: A RETAPER 
 }
 
 /* ------------------------------------ Fumigène ------------------------------------ */
 
-void ignite () {
+void pouf () {
     digitalWrite(PIN_FUMIGENE, HIGH);
 }
 
@@ -101,7 +112,11 @@ void ignite () {
 
 // le neyman n'a pas de pull-up/down => fait la moyenne de la sortie pour lisser les valeurs induites (patte en l'air)
 void neyman() {
-    neymanActive = average(neymanValues, analogRead(PIN_NEYMAN)) > 50;
+    static int neymanSmoothed = 0;
+
+    neymanSmoothed = smooth(neymanSmoothed, analogRead(PIN_NEYMAN));
+
+    neymanActive = neymanSmoothed > 50;
 }
 
 void boutonAdminMemoriserCode() {
@@ -181,7 +196,7 @@ void loop() {
     if ( elementsConnectes && reservoirPlein && codesMatch ) {
         afficheVoyantLaunch();
         if ( neymanActive ){
-            ignite();
+            pouf();
         }
     }
 
