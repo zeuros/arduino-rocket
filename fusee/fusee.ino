@@ -26,12 +26,16 @@ const int PIN_NEYMAN = A7;// Pin Lecture analogique seulement !
 
 const int PIN_FUMIGENE = 6;
 
-bool niveauAtteint[3]  = {false};
-bool neymanActive      = false;
-bool buttonPressed     = false;
-bool elementsConnectes = false;// tous les elements de la fusee sont connectée entre eux
-bool reservoirPlein    = false;
-bool codesMatch        = false;
+const int NB_CONF_STAGES = 7;
+const int NOMBRE_TOTAL_ELEMENTS = 4;
+
+int niveauAtteint[3]     = {0};
+bool readyToLaunch       = false;
+bool neymanActive        = false;
+bool buttonPressed       = false;
+int nbElementsConnectes  = 0;// tous les elements de la fusee sont connectée entre eux
+bool reservoirPlein      = false;
+bool codesMatch          = false;
 char* code       = "00000000";// code de départ
 char* secretCode = retrieveSecretCode();
 
@@ -52,7 +56,6 @@ bool buttonHold[8] = {false};
 // Lis et affiche la hauteur de carburant
 void hauteurReservoirCarburant() {
     static int hauteurEauValues[3] = {0};// par défaut, le pin est en l'air (> 0)
-    int nombreNiveauAtteint = 0;
 
     // Lecture et Affichage A0-A2
     for ( int pinNumber = 0 ; pinNumber < PIN_COUNT_RESERVOIR ; pinNumber++) {
@@ -64,14 +67,11 @@ void hauteurReservoirCarburant() {
         
         digitalWrite(PINS_LED_RESERVOIR[pinNumber], niveauAtteint[pinNumber] ? HIGH : LOW);
 
-        nombreNiveauAtteint++;
-        
-        // Serial.print(String(pinNumber) + ":" + hauteurEauValues[pinNumber] + "\t");
     }
 
-    reservoirPlein = ( nombreNiveauAtteint == PIN_COUNT_RESERVOIR );
+    reservoirPlein = ( sum(niveauAtteint, PIN_COUNT_RESERVOIR) == PIN_COUNT_RESERVOIR );
 
-    // Serial.print("\n");
+    // Serial.print(String(nombreNiveauAtteint) + "\n");
 }
 
 
@@ -83,23 +83,51 @@ void hauteurReservoirCarburant() {
 
 // Lis et affiche le nombre de parties de fusée connectées
 // Plus il y a d'éléments connectés, plus la résistance baisse (éléments en parallèle)
-// donc plus on connecte d'éléments, plus la valeur lue sera faible
+// donc plus on connecte d'éléments, plus la valeur lue sera élevée
 void connectionElementsFusee() {
+    static int elementsSmoothed = 1024;
 
+    // tension liée au nombre d'éléments connectés
     elementsSmoothed = smooth( elementsSmoothed , analogRead(PIN_READ_ELEMENTS));
 
-    digitalWrite(PINS_LED_ELEMENTS[0], elementsSmoothed < 400 ? HIGH : LOW);// seuil: 346
-    digitalWrite(PINS_LED_ELEMENTS[1], elementsSmoothed < 300 ? HIGH : LOW);// seuil: 165
-    digitalWrite(PINS_LED_ELEMENTS[2], elementsSmoothed < 100 ? HIGH : LOW);// seuil: 89
-    digitalWrite(PINS_LED_ELEMENTS[3], elementsSmoothed < 70 ? HIGH : LOW);// seuil: 56
+    static int thresholds[NB_CONF_STAGES] = {/* valeurs_de_palier */
+        /*843 => */834,
+        /*826 => */726,
+        /*625 => */581,
+        /*537 => */475, // = (537+412) / 2
+        /*412 => */296,
+        /*180 => */90,
+        /*0 => */0
+    };
+    static int stages[NB_CONF_STAGES][4] = {// {etage 0, etage 1, etage 2, etage 3}}
+        {1, 1, 1, 1},
+        {0, 1, 1, 1},
+        {1, 1, 1, 0},
+        {0, 1, 1, 0},
+        {1, 1, 0, 0},
+        {0, 1, 0, 0},
+        {0, 0, 0, 0}
+    };
+    
+    for(int i = 0; i < NB_CONF_STAGES; i++){
+        // si on trouve un palier proche de la mesure, on en déduit les éléments connectés (voir tableau stages)
+        if ( elementsSmoothed > thresholds[i] ) {
 
-    elementsConnectes = analVal < 70; // @TODO: A RETAPER 
+            nbElementsConnectes = sum(stages[i], 4);
+
+            for(int j=0 ; j < NOMBRE_TOTAL_ELEMENTS ; j++){// cherche les éléments dans la liste d'éléments à activer.
+                digitalWrite(PINS_LED_ELEMENTS[j], stages[i][j] ? HIGH : LOW);
+            }
+
+            break;
+        }
+    }
 }
 
 /* ------------------------------------ Fumigène ------------------------------------ */
 
 void pouf () {
-    digitalWrite(PIN_FUMIGENE, HIGH);
+    digitalWrite(PIN_FUMIGENE, (readyToLaunch && neymanActive) ? HIGH : LOW);
 }
 
 
@@ -142,8 +170,13 @@ void changeChiffreCode () {
     }
 }
 
-void afficheVoyantLaunch() {
-    digitalWrite(PIN_LAUNCH, HIGH);
+void voyantLaunch() {
+
+    readyToLaunch = (nbElementsConnectes == NOMBRE_TOTAL_ELEMENTS) 
+        && reservoirPlein 
+        && codesMatch;
+
+    digitalWrite(PIN_LAUNCH, readyToLaunch ? HIGH : LOW);
 }
 
 
@@ -178,27 +211,28 @@ void setup() {
 
 }
 
+
+int rrr = 0;
 void loop() {
 
-    // fusée
+    // ------- fusée -------
     hauteurReservoirCarburant();
-    
-    connectionElementsFusee();
-    
-    // mallette
 
+    connectionElementsFusee();
+
+    // ------- mallette -------
     changeChiffreCode();
 
     boutonAdminMemoriserCode();
 
     neyman();
-    
-    if ( elementsConnectes && reservoirPlein && codesMatch ) {
-        afficheVoyantLaunch();
-        if ( neymanActive ){
-            pouf();
-        }
-    }
+
+    voyantLaunch();
+
+    // Serial.print(String(nbElementsConnectes == NOMBRE_TOTAL_ELEMENTS) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
+
+    // allume le fumi
+    pouf();
 
     timer.tick();
 }
