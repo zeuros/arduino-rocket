@@ -41,6 +41,8 @@ void blingBling() {
             }
         }
     }
+
+    tm.brightness(3);
 }
 
 // répète blinkLeds tq les codes matchent
