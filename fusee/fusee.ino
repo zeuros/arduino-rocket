@@ -212,8 +212,6 @@ void setup() {
 
 }
 
-
-int rrr = 0;
 void loop() {
 
     // ------- fusée -------
