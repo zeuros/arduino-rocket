@@ -15,7 +15,7 @@ void doLEDs(uint8_t value) {
 void blingBling() {
 
     tm.reset();
-    tm.displayText("HAHAHAHA");
+    tm.displayText("MOUAHAHA");
     
     int speed = 3;// + = +lent
     int steps = 18;// + = +fluide & +lent
