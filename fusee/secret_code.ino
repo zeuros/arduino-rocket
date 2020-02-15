@@ -24,6 +24,10 @@ void weHaveANewCode(char* newCode) {
 
     codesMatch = String(code).equals(secretCode);
 
+    codesMatch 
+        ? successTone() 
+        : notificationTone();
+
     if ( codesMatch ) {
         blinkLeds();
     }

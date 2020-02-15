@@ -36,6 +36,7 @@ bool buttonPressed       = false;
 int nbElementsConnectes  = 0;// tous les elements de la fusee sont connectée entre eux
 bool reservoirPlein      = false;
 bool codesMatch          = false;
+bool buzzing             = false;
 char* code       = "00000000";// code de départ
 char* secretCode = retrieveSecretCode();
 
