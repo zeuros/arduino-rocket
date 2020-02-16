@@ -72,8 +72,6 @@ void hauteurReservoirCarburant() {
     }
 
     reservoirPlein = ( sum(niveauAtteint, PIN_COUNT_RESERVOIR) == PIN_COUNT_RESERVOIR );
-
-    // Serial.print(String(nombreNiveauAtteint) + "\n");
 }
 
 
