@@ -11,16 +11,15 @@ void doLEDs(uint8_t value) {
     }
 }
 
-// 
 void blingBling() {
 
     tm.reset();
-    tm.displayText("HOUAHAHA");
+    tm.displayText("YOURCODE");
     
     int speed = 3;// + = +lent
     int steps = 18;// + = +fluide & +lent
 
-    for ( int i = 0 ; i < 7 ; i++ ) {
+    for ( int i = 0 ; i < 4 ; i++ ) {
         // decroissant
         for (uint8_t brightness = 5; brightness-- > 1 ;) {
             //sub steps
