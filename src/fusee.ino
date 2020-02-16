@@ -37,6 +37,7 @@ int nbElementsConnectes  = 0;// tous les elements de la fusee sont connectée en
 bool reservoirPlein      = false;
 bool codesMatch          = false;
 bool buzzing             = false;
+bool launched            = false;
 char* code       = "00000000";// code de départ
 char* secretCode = retrieveSecretCode();
 
@@ -58,19 +59,28 @@ bool buttonHold[8] = {false};
 void hauteurReservoirCarburant() {
     static int hauteurEauValues[3] = {0};// par défaut, le pin est en l'air (> 0)
 
+    int previousHauteurEauValues[3] = {0};
+    memcpy(previousHauteurEauValues, hauteurEauValues, sizeof(hauteurEauValues));
+
     // Lecture et Affichage A0-A2
     for ( int pinNumber = 0 ; pinNumber < PIN_COUNT_RESERVOIR ; pinNumber++) {
         // Lecture et Affichage
 
         hauteurEauValues[pinNumber] = smooth(hauteurEauValues[pinNumber], analogRead(PINS_RESERVOIR[pinNumber]));
         
+        int previousNiveauAtteint = niveauAtteint[pinNumber];
         niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] > 50;
         
+        if ( niveauAtteint[pinNumber] != previousNiveauAtteint ) {
+            tuding(800);
+        }
+
         digitalWrite(PINS_LED_RESERVOIR[pinNumber], niveauAtteint[pinNumber] ? HIGH : LOW);
 
     }
 
     reservoirPlein = ( sum(niveauAtteint, PIN_COUNT_RESERVOIR) == PIN_COUNT_RESERVOIR );
+
 }
 
 
@@ -89,8 +99,10 @@ void connectionElementsFusee() {
     // tension liée au nombre d'éléments connectés
     elementsSmoothed = smooth( elementsSmoothed , analogRead(PIN_READ_ELEMENTS));
 
+    // Serial.print(String(elementsSmoothed)+"\n");
+
     static int thresholds[NB_CONF_STAGES] = {/* valeurs_de_palier */
-        /*843 => */834,
+        /*843 => */834,// valeur qui va bien d'habitude: 834
         /*826 => */726,
         /*625 => */581,
         /*537 => */475, // = (537+412) / 2
@@ -108,11 +120,17 @@ void connectionElementsFusee() {
         {0, 0, 0, 0}
     };
     
+    
     for(int i = 0; i < NB_CONF_STAGES; i++){
         // si on trouve un palier proche de la mesure, on en déduit les éléments connectés (voir tableau stages)
         if ( elementsSmoothed > thresholds[i] ) {
-
+            int nbElementsConnectesBefore = nbElementsConnectes;
+            
             nbElementsConnectes = sum(stages[i], 4);
+
+            if ( nbElementsConnectesBefore != nbElementsConnectes ) {
+                tudiiWindows();
+            }
 
             for(int j=0 ; j < NOMBRE_TOTAL_ELEMENTS ; j++){// cherche les éléments dans la liste d'éléments à activer.
                 digitalWrite(PINS_LED_ELEMENTS[j], stages[i][j] ? HIGH : LOW);
@@ -126,7 +144,14 @@ void connectionElementsFusee() {
 /* ------------------------------------ Fumigène ------------------------------------ */
 
 void pouf () {
-    digitalWrite(PIN_FUMIGENE, (readyToLaunch && neymanActive) ? HIGH : LOW);
+    bool launch = readyToLaunch && neymanActive;
+
+    if ( launch && !launched) {
+        neverGiveYouUp();
+        launched = true;
+    }
+
+    digitalWrite(PIN_FUMIGENE, launch ? HIGH : LOW);
 }
 
 
@@ -140,6 +165,7 @@ void pouf () {
 // le neyman n'a pas de pull-up/down => fait la moyenne de la sortie pour lisser les valeurs induites (patte en l'air)
 void neyman() {
     static int neymanSmoothed = 0;
+    int neymanBefore = neymanActive;
 
     neymanSmoothed = smooth(neymanSmoothed, analogRead(PIN_NEYMAN));
 
