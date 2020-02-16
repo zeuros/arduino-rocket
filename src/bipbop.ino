@@ -17,6 +17,16 @@ void successTone() {
 }
 
 void notificationTone() {
-    tone(PIN_BUZZER, 1200, 40); 
+    for(int i=0; i<5; i++){
+        tone(PIN_BUZZER, 1200 + i * 100, 40);
+        delay(10);
+    }
+}
+
+void boom() {
+    for(int i=0; i<100; i++){
+        tone(PIN_BUZZER, 1600 + i * 100, 40);
+        delay(10);
+    }
 }
 
