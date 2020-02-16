@@ -1,0 +1,1355 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"PIN_",
+				"PIN_BUZZER"
+			],
+			[
+				"NB_E",
+				"NOMBRE_TOTAL_ELEMENTS"
+			],
+			[
+				"reser",
+				"reservoirPlein"
+			],
+			[
+				"print",
+				"printf\tprintf …"
+			],
+			[
+				"elemtn",
+				"elementsConnectes"
+			],
+			[
+				"fumi",
+				"PIN_FUMIGENE"
+			],
+			[
+				"codes",
+				"codesMatch"
+			],
+			[
+				"prin",
+				"print"
+			],
+			[
+				"button",
+				"buttons"
+			],
+			[
+				"digit",
+				"digitalRead\tArduino digitalRead"
+			],
+			[
+				"pins",
+				"pinsLEDElements"
+			],
+			[
+				"if",
+				"ifmain\tif __name__ == '__main__'"
+			],
+			[
+				"di",
+				"Dispatcher"
+			],
+			[
+				"preprocess",
+				"pre_process_text_image"
+			],
+			[
+				"t",
+				"topLeftCornerOffset〔variable〕"
+			],
+			[
+				"get",
+				"getAttribute"
+			],
+			[
+				"table",
+				"table_name〔argument〕"
+			],
+			[
+				"top",
+				"topLeftCornerOffset"
+			],
+			[
+				"data",
+				"dataPath〔variable〕"
+			],
+			[
+				"scree",
+				"screen_scraping"
+			],
+			[
+				"groupNo",
+				"groupNodeAttrs〔variable〕"
+			],
+			[
+				"random",
+				"randomColor〔variable〕"
+			],
+			[
+				"recta",
+				"rectangle〔variable〕"
+			],
+			[
+				"SVG",
+				"SVGCreator〔class〕"
+			],
+			[
+				"mouse",
+				"mouse_mover"
+			],
+			[
+				"tab",
+				"table_name〔argument〕"
+			],
+			[
+				"Tablenam",
+				"tableNames"
+			],
+			[
+				"displ",
+				"displayARectangle〔function〕"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "fusee/fusee/fusee.ino",
+			"settings":
+			{
+				"buffer_size": 7096,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "fusee/fusee/afficheur.ino",
+			"settings":
+			{
+				"buffer_size": 1436,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "fusee/fusee/bipbop.ino",
+			"settings":
+			{
+				"buffer_size": 401,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "fusee/fusee/secret_code.ino",
+			"settings":
+			{
+				"buffer_size": 1209,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "843: tous\n625: 0 1 2\n412: 0 1\n180: 1\n537: 1 2\n826: 1 2 3\n",
+			"settings":
+			{
+				"buffer_size": 57,
+				"line_ending": "Windows",
+				"name": "843: tous"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 38.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"previe",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"preview",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"markd",
+				"Set Syntax: Markdown"
+			],
+			[
+				"add",
+				"Git: Add All"
+			],
+			[
+				"rena",
+				"Rename File"
+			],
+			[
+				"renam",
+				"Rename File"
+			],
+			[
+				"rein",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"uino",
+				"Set Syntax: Arduino"
+			],
+			[
+				"arduino",
+				"Set Syntax: Arduino"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"trim",
+				"Trimmer: Trim selections."
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"uper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"arduin",
+				"Set Syntax: Arduino"
+			],
+			[
+				"js",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"php",
+				"Set Syntax: PHP"
+			],
+			[
+				"CSS",
+				"Set Syntax: CSS"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"syntax",
+				"Set Syntax: CSS"
+			],
+			[
+				"syntax json",
+				"Set Syntax: JSON"
+			],
+			[
+				"pretty",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"previous",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"blame",
+				"Git: Blame"
+			],
+			[
+				"previous ver",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"git histo",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"package rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"package ",
+				"Install Package Control"
+			],
+			[
+				"package remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"markdown",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"preview ",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"cheat sh",
+				"Markdown Preview: Open Markdown Cheat sheet"
+			],
+			[
+				"package control install ",
+				"Package Control: Install Package"
+			],
+			[
+				"package control add",
+				"Package Control: Add Repository"
+			],
+			[
+				"package",
+				"Preferences: Browse Packages"
+			],
+			[
+				"git version",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"inden",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"indent",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"side bar",
+				"View: Toggle Open Files in Side Bar"
+			],
+			[
+				"git versi",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"git versino",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"git vers",
+				"Git: Show Previous Version of Current File"
+			],
+			[
+				"select until",
+				"SublimeLinter: No Column Highlights Entire Line"
+			],
+			[
+				"swap",
+				"Preferences: Browse Packages"
+			],
+			[
+				"open",
+				"View: Toggle Open Files in Side Bar"
+			]
+		],
+		"width": 540.0
+	},
+	"console":
+	{
+		"height": 150.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/fusee"
+	],
+	"file_history":
+	[
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/fusee/afficheur.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/fusee/tools.ino",
+		"/D/logiciels/arduino/hardware/arduino/avr/cores/arduino/Arduino.h",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/libraries/TM1638plus/src/TM1638plus.h",
+		"/D/logiciels/arduino/hardware/arduino/avr/cores/arduino/main.cpp",
+		"/C/Users/JEAN-KLAUD/Desktop/dsl sympa.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zO08DE7179/ttt.txt",
+		"/D/logiciels/arduino/hardware/arduino/avr/cores/arduino/WString.h",
+		"/D/logiciels/arduino/examples/01.Basics/Blink/Blink.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/fusee/fusee.ino",
+		"/D/logiciels/arduino/libraries/Adafruit_Circuit_Playground/README.md",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/test_connectivite/test_connectivite.ino",
+		"/C/Users/JEAN-KLAUD/Documents/compétences.md",
+		"/C/Users/JEAN-KLAUD/Documents/elise_chene_et_quetza_et_iblis.json",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/fusee.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/bipbop.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/afficheur.ino",
+		"/C/Users/JEAN-KLAUD/Desktop/ordelie.md",
+		"/D/downloads/AdGuard Premium v3.3.227n-Mod.apk",
+		"/D/downloads/CamSam PLUS_v3.5.0.apk",
+		"/F/documents/papiers/bank/compte.txt",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/libraries/readme.txt",
+		"/C/Users/JEAN-KLAUD/Downloads/points-refuges-info-standard(1).gpx",
+		"/C/Users/JEAN-KLAUD/Downloads/points-refuges-info-standard.gpx",
+		"/C/Users/JEAN-KLAUD/Desktop/addresse popo.txt",
+		"/C/Users/JEAN-KLAUD/Desktop/Nouveau dossier/ZsZjvWd0-DM.gpx",
+		"/D/downloads/Sekiro.Shadows.Die.Twice-CODEX/codex.nfo",
+		"/F/documents/boulot/CV/latex_CV/online_editor.txt",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/secret_code.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/readme.md",
+		"/C/Users/JEAN-KLAUD/Desktop/market/ttt.txt",
+		"/C/Users/JEAN-KLAUD/Documents/points_d_interet.gpx",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/led_stuff.ino",
+		"/D/logiciels/arduino/libraries/EEPROM/README.md",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/test_connectivite/secret_code.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/fusee/tools.ino",
+		"/D/logiciels/arduino/libraries/EEPROM/src/EEPROM.h",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/sketch_nov13a/sketch_nov13a.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/libraries/arduino-timer/README.md",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/bite/bite.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/sketch_nov13a/sketch_nov13a_AVR_DUEMILANOVE_atmega328p.hex",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/libraries/arduino-timer/src/timer.h",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/libraries/TM1638plus/examples/TM1638plus_TEST/TM1638plus_TEST.ino",
+		"/C/Users/JEAN-KLAUD/Documents/Arduino/libraries/TM1638plus/src/TM1638plus.cpp",
+		"/C/Users/JEAN-KLAUD/AppData/Roaming/Sublime Text 3/Packages/User/Stino/app_dir.stino-settings",
+		"/C/Users/JEAN-KLAUD/AppData/Roaming/Sublime Text 3/Packages/User/Stino/Default (Windows).sublime-keymap",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zO81B8F1F1/README.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/simon_module.fzz",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zO0AF1C8FD/ttt.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Local/SquirrelTemp/SquirrelSetup.log",
+		"/D/downloads/Halo.3 - RELOADED/ReadMe.txt",
+		"/D/downloads/Halo.3 - RELOADED/Screenshots/ReadMe.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zO4AC3B428/ttt.txt",
+		"/C/Users/pilou le chien/Desktop/jeux/LOL/ALLUME LE DISK D'HUR.txt",
+		"/C/Recovery.txt",
+		"/D/downloads/Ralph.Breaks.The.Internet.2018.MULTi.1080p.WEB.H264-SiGeRiS[EliteT]/ralph.breaks.the.internet.2018.multi.1080p.web.h264-sigeris.nfo",
+		"/D/downloads/Marie.Antoinette.2006.1080p.BluRay.H264.AAC-RARBG/RARBG.txt",
+		"/F/gery/source.txt",
+		"/C/sauv_debrancher/BOOTEX.LOG",
+		"/C/Users/JEAN-KLAUD/Music/travel.txt",
+		"/Q/Partition2 (53,30 Gb, start at 0) babedew/Unknown files/ExtentFile_00000078",
+		"/Q/Partition2 (53,30 Gb, start at 0) babedew/Unknown files/ExtentFile_00000077",
+		"/D/jeux/Overcooked/Overcooked/steam_appid.txt",
+		"/C/Users/JEAN-KLAUD/Music/reactlower.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Roaming/yuzu/keys/title.keys_autogenerated",
+		"/C/Users/JEAN-KLAUD/AppData/Roaming/yuzu/keys/prod.keys",
+		"/C/Users/JEAN-KLAUD/Documents/yuzu_installer.log",
+		"/C/Users/JEAN-KLAUD/AppData/Local/yuzu/canary/icudtl.dat",
+		"/C/Users/JEAN-KLAUD/AppData/Local/yuzu/metadata.json",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/Competences_Blood_Slayers.txt",
+		"/C/Users/JEAN-KLAUD/Documents/The Witcher 3/user.settings",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zOC50E4BEB/Tutor Installing brushpack.txt",
+		"/E/documents/patsinee/Proof of accommodation.txt",
+		"/C/Users/JEAN-KLAUD/Downloads/abalancer.txt",
+		"/H/setup-1.bin",
+		"/C/Users/JEAN-KLAUD/Desktop/ttt.txt",
+		"/D/downloads/Frostpunk.The.Fall.of.Winterhome-CODEX/codex.nfo",
+		"//HUBERT-TAMERT/Users/jeanklaud/Desktop/programme.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Roaming/11bitstudios/Frostpunk/config.bin",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zO8FAAD755/weapons.txt",
+		"/C/Users/JEAN-KLAUD/AppData/Local/Temp/7zO8AEC55C9/ttt.txt",
+		"/D/jeux/Overcooked/password.txt",
+		"/F/documents/bons plans, idées géniales/voyage ritalie.txt",
+		"/F/documents/bons plans, idées géniales/velo electrique/couts.txt",
+		"/F/compostelle/chants/franchon.txt",
+		"/J/films/a voir/general/a mate vite.txt",
+		"/C/Users/JEAN-KLAUD/Desktop/z3/imei.txt",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/tests/runTests.py",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/tests/test_tableScreenBased.py",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/table_analysers/base.py",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/tests/__init__.py",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/tools/mongo_manager.py",
+		"/C/Users/JEAN-KLAUD/Downloads/tracé.gpx",
+		"/J/logiciels, cracks/son/Native Instruments - Session Strings Pro/dynamics.nfo",
+		"/F/documents/boulot/premier_emploi/motiv4.txt",
+		"/F/st jacques/chants/franchon.txt",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/.gitignore",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/main.py",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/config.ini",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/poker/tables/coordinates_merger.py",
+		"/C/Users/JEAN-KLAUD/Desktop/BACKUPS/05157df554b11d23/2018-02-27--06-22-02_Tyrannus_Rom_V291_by_frenkowski/data.info",
+		"/C/Users/JEAN-KLAUD/Desktop/BACKUPS/05157df554b11d23/2018-02-28--04-57-38_MMB29KG920W8VLU5CPK4/recovery.log",
+		"/C/Users/JEAN-KLAUD/Desktop/BACKUPS/05157df554b11d23/2018-02-28--04-57-38_MMB29KG920W8VLU5CPK4/efs.info",
+		"/C/Users/JEAN-KLAUD/Documents/Poker/environment.yml",
+		"/C/Users/JEAN-KLAUD/Documents/poire-trading/myStrategy.py",
+		"/C/Users/JEAN-KLAUD/Documents/poire-trading/main.py",
+		"/C/Users/JEAN-KLAUD/Desktop/local.py",
+		"/C/Users/JEAN-KLAUD/Documents/poire-trading/optimizerServer.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/technical/cross.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/optimizer/worker.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/strategy/__init__.py",
+		"/C/Users/JEAN-KLAUD/Documents/poire-trading/samples/data/EUR_GBP-last-1-S5-oanda.csv",
+		"/C/Users/JEAN-KLAUD/Documents/poire-trading/oanda.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/barfeed/csvfeed.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/bar.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/broker/fillstrategy.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/broker/backtesting.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/feed/__init__.py",
+		"/C/Users/JEAN-KLAUD/Desktop/Lovers.in.a.Dangerous.Spacetime.PC/ReadMe.txt",
+		"/D/jeux/Call of Duty Black Ops III/scripts/dllmain.cpp",
+		"/D/jeux/Call of Duty Black Ops III/scripts/BlackOps3.LANGameSwitcher.asi",
+		"/D/jeux/Call of Duty Black Ops III/BlackOps3.exe.CODBUILD15-764.CL#2668796.1518915364.dmp",
+		"/C/Program Files (x86)/CheatEngine/donottrace.txt",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/observer.py",
+		"/C/Users/JEAN-KLAUD/AppData/Roaming/Sublime Text 3/Packages/User/Python Import Magic.sublime-settings",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/dispatcher.py",
+		"/C/Users/JEAN-KLAUD/Desktop/fillstrategy.py",
+		"/C/Program Files (x86)/Python36-32/Lib/site-packages/pyalgotrade/feed/memfeed.py"
+	],
+	"find":
+	{
+		"height": 40.0
+	},
+	"find_in_files":
+	{
+		"height": 107.0,
+		"where_history":
+		[
+			"-*/log/*,-.importmagic.idx",
+			"-*/log/*",
+			"-C:\\Users\\JEAN-KLAUD\\Documents\\Poker\\poker\\log\\*",
+			"-/poker/log/*",
+			"",
+			"coordinates.json",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"buzzing",
+			"blinkLeds",
+			"blink",
+			"blin",
+			"blink",
+			"blinkLeds",
+			"timer",
+			"playtone",
+			"playTone",
+			"timer",
+			"codesMatch",
+			"toneFinished",
+			"codesMatch",
+			"melodieTimeout",
+			"PIN_FUMIGENE",
+			"timer",
+			"melodieTimeout",
+			"failTone",
+			"rrr",
+			"PIN_BUZZER",
+			"combinations",
+			"neymanActive",
+			"voyantLaunch",
+			"readyToLaunch",
+			"ready",
+			"print",
+			"pouf",
+			"PIN_FUMIGENE",
+			"A3",
+			"niveauAtteint",
+			"NiveauAtteint",
+			"niveauAtteint",
+			"NiveauAtteint",
+			"niveauAtteint",
+			"nombreni",
+			"nombreNiveauAtteint",
+			"reservoirPlein",
+			"PIN_LAUNCH",
+			"voyantLaunch",
+			"afficheVoyantLaunch",
+			"pouf",
+			"startFumi",
+			"PIN_FUMIGENE",
+			"afficheVoyantLaunch",
+			"neymanActive",
+			"readyToLaunch",
+			"afficheVoyantLaunch",
+			"neymanActive",
+			"pouf",
+			"neymanac",
+			"NB_CONF_STAGES",
+			"1",
+			"measu",
+			"NB_CONF_STAGES",
+			"NOMBRE_TOTAL_ELEMENTS",
+			"LEN",
+			"arr",
+			"nbElementsConnectes",
+			"thresholds",
+			"false",
+			"true",
+			"]",
+			"[",
+			"]]",
+			"nbElementsConnectes",
+			"NOMBRE_TOTAL_ELEMENTS",
+			"nbElementsConnectes",
+			"nombreElementsConnectes",
+			"elementsConnectes",
+			"ElementsConnectes",
+			"elementsConnectes",
+			"nombreElementsConnectes",
+			"elementsConnectes",
+			",]",
+			"smooth",
+			"serial",
+			"print",
+			"smooth",
+			"printf",
+			"analv",
+			"analVal",
+			"elementsConnectes",
+			"ignite",
+			"reservoirPlein",
+			"pin",
+			"niveauAtteint",
+			"neymanActive",
+			"niveauAtteint",
+			"hauteurEauValues",
+			"neymanSmoothed",
+			"sum",
+			"neymanSmoothed",
+			"smooth",
+			"hauteurEauValues",
+			"neymanValues",
+			"smooth",
+			"average(",
+			"hauteurEauValues\n",
+			"average",
+			"neymanValues",
+			"moyenn",
+			"-        ",
+			"◦\t",
+			"• ",
+			"€",
+			"1.",
+			"PIN_READ_ELEMENTS",
+			"neyman",
+			"PINS_LED_ELEMENTS",
+			"analVal",
+			"PINS_RESERVOIR",
+			"reservoirPlein",
+			"elementsConnectes",
+			"connectionElementsFusee",
+			"connectionPartiesFusee",
+			"afficheVoyantLaunch",
+			"PIN_LAUNCH",
+			"neymanActive",
+			"reservoirPlein",
+			"elementsConnectes",
+			"ignite",
+			"PIN_FUMIGENE",
+			"Fumigène",
+			"neyman",
+			"boutonAdminMemoriserCode",
+			"boutonSetCode",
+			"actionBoutons",
+			"neymanActive"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"\"",
+			"coordinates.json"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "fusee/fusee/fusee.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7096,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5446,
+								5446
+							]
+						],
+						"settings":
+						{
+							"SL.13.region_keys":
+							[
+							],
+							"SL.19.region_keys":
+							[
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2719.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "fusee/fusee/afficheur.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1436,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								311,
+								311
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "fusee/fusee/bipbop.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7,
+								16
+							]
+						],
+						"settings":
+						{
+							"SL.19.region_keys":
+							[
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "fusee/fusee/secret_code.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1209,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								569,
+								569
+							]
+						],
+						"settings":
+						{
+							"SL.21.region_keys":
+							[
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 107.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 57,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								57,
+								0
+							]
+						],
+						"settings":
+						{
+							"SL.23.region_keys":
+							[
+							],
+							"auto_name": "843: tous",
+							"git_gutter_is_enabled": false,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 41.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 0.0
+	},
+	"output.SublimeLinter Messages":
+	{
+		"height": 120.0
+	},
+	"output.deviot":
+	{
+		"height": 126.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 132.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"output.stino_build_panel":
+	{
+		"height": 231.0
+	},
+	"output.stino_panel":
+	{
+		"height": 126.0
+	},
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"project": "arduino_projects.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"tool",
+				"fusee\\tools.ino"
+			],
+			[
+				"read",
+				"libraries\\Adafruit_Circuit_Playground\\README.md"
+			],
+			[
+				"fusee",
+				"Arduino\\fusee\\fusee.ino"
+			],
+			[
+				"fuseerea",
+				"Arduino\\fusee\\readme.md"
+			],
+			[
+				"fuseereadme",
+				"Arduino\\fusee\\readme.md"
+			],
+			[
+				"eeprom",
+				"libraries\\EEPROM\\src\\EEPROM.h"
+			],
+			[
+				"ignore",
+				".gitignore"
+			],
+			[
+				"main",
+				"poker\\main.py"
+			],
+			[
+				"tests/",
+				"poker\\tests\\test_tableScreenBased.py"
+			],
+			[
+				"mainpy",
+				"poker\\main.py"
+			],
+			[
+				"configini",
+				"poker\\config.ini"
+			],
+			[
+				"yml",
+				"environment.yml"
+			],
+			[
+				"tests",
+				"poker\\tests\\test_tableScreenBased.py"
+			],
+			[
+				"localpy",
+				"pyalgotrade\\optimizer\\local.py"
+			],
+			[
+				"oanda",
+				"poire-trading\\oanda.py"
+			],
+			[
+				"fillstr",
+				"pyalgotrade\\broker\\fillstrategy.py"
+			],
+			[
+				"feedinit",
+				"pyalgotrade\\feed\\__init__.py"
+			],
+			[
+				"strate__init",
+				"pyalgotrade\\strategy\\__init__.py"
+			],
+			[
+				"on",
+				"poire-trading\\oanda.py"
+			],
+			[
+				"onda",
+				"poire-trading\\oanda.py"
+			],
+			[
+				"envir",
+				"environment.yml"
+			],
+			[
+				".gitmodules",
+				".gitmodules"
+			],
+			[
+				"export",
+				"export_env.sh.bat"
+			],
+			[
+				"envi",
+				"environment.yml"
+			],
+			[
+				"igno",
+				".gitignore"
+			],
+			[
+				"data",
+				"pima-indians-diabetes.data"
+			],
+			[
+				".ini",
+				"Poker\\poker\\config.ini"
+			],
+			[
+				"tablescreenbase",
+				"Poker\\poker\\table_analysers\\table_screen_based.py"
+			],
+			[
+				"scrapingtest",
+				"Poker\\poker\\tables\\2-scraping_tester.py"
+			],
+			[
+				"templatemat",
+				"Poker\\template_matching.py"
+			],
+			[
+				"3",
+				"Poker\\poker\\tables\\3-save_svg_back_to_coordinates.py"
+			],
+			[
+				"2",
+				"Poker\\poker\\tables\\2-scraping_tester.py"
+			],
+			[
+				"tablescreen",
+				"Poker\\poker\\tests\\test_tableScreenBased.py"
+			],
+			[
+				"pokerbo",
+				"Poker\\pokerbot_downloader.py"
+			],
+			[
+				"1-",
+				"Poker\\poker\\tables\\1-create_svg_from_coordinates.py"
+			],
+			[
+				"3-",
+				"Poker\\poker\\tables\\3-scrapingTester.py"
+			],
+			[
+				"2-",
+				"Poker\\poker\\tables\\2-save_svg_back_to_coordinates.py"
+			],
+			[
+				"coordinatesfilem",
+				"C:\\Users\\JEAN-KLAUD\\Documents\\Poker.wiki\\Coordinates-file.md"
+			],
+			[
+				"coordinatesjs",
+				"Poker\\poker\\coordinates.json"
+			],
+			[
+				"backgrounds",
+				"Poker\\poker\\tables\\backgrounds\\how to improve.txt"
+			],
+			[
+				".giti",
+				".gitignore"
+			],
+			[
+				"old",
+				"poker\\tables\\table_setup.old.py"
+			],
+			[
+				"base",
+				"poker\\table_analysers\\base.py"
+			],
+			[
+				"mongomn",
+				"poker\\tools\\mongo_manager.py"
+			],
+			[
+				"mongoman",
+				"poker\\tools\\mongo_manager.py"
+			],
+			[
+				"tablebased",
+				"poker\\table_analysers\\table_screen_based.py"
+			],
+			[
+				"genge",
+				"poker\\decisionmaker\\genetic_algorithm.py"
+			],
+			[
+				"json",
+				"poker\\coordinates.json"
+			],
+			[
+				"mouse_mover",
+				"poker\\tools\\mouse_mover.py"
+			],
+			[
+				"tablescra",
+				"poker\\table_analysers\\table_screen_based.py"
+			],
+			[
+				"tableset",
+				"poker\\tables\\table_setup.old.py"
+			],
+			[
+				"cornerfi",
+				"poker\\tables\\cornerFinder.py"
+			],
+			[
+				"scrapingps2",
+				"poker\\tables\\templates\\screen_scraping_PS2.svg"
+			],
+			[
+				"svg",
+				"poker\\tables\\templates\\mouse_mover_PS2.svg"
+			],
+			[
+				"scrapinsvg",
+				"poker\\tables\\templates\\screen_scraping_PS2.svg"
+			],
+			[
+				"setup",
+				"poker\\tables\\table_setup.old.py"
+			],
+			[
+				".old",
+				"poker\\coordinates.old.bak.txt"
+			],
+			[
+				"coordi",
+				"poker\\coordinates.json"
+			],
+			[
+				"coordinates",
+				"poker\\coordinates.json"
+			],
+			[
+				"tablescre",
+				"poker\\table_analysers\\table_screen_based.py"
+			],
+			[
+				"log/",
+				"poker\\log\\pokerprogram.log"
+			],
+			[
+				"coordinatesold",
+				"poker\\coordinates.old.bak.txt"
+			],
+			[
+				"coordinate",
+				"poker\\coordinates.txt"
+			],
+			[
+				"1",
+				"poker\\tables\\1-create_svg_from_coordinates.py"
+			],
+			[
+				"pokersetu",
+				"poker\\tables\\table_setup.old.py"
+			],
+			[
+				"screenscraping",
+				"poker\\tables\\screen_scraping_PS2.svg"
+			],
+			[
+				"tablesetup",
+				"table_setup.py"
+			],
+			[
+				"tablesetu",
+				"table_setup.py"
+			],
+			[
+				"screen_scra",
+				"poker\\tables\\screen_scraping_PS2.bak.svg"
+			],
+			[
+				"cleansv",
+				"poker\\tables\\cleanSVG.py"
+			],
+			[
+				"screensrapingps2",
+				"poker\\tables\\screen_scraping_PS2.svg"
+			],
+			[
+				"baksvg",
+				"poker\\tables\\screen_scraping_PS2.bak.svg"
+			],
+			[
+				"screenscrapingps2ba",
+				"poker\\tables\\screen_scraping_PS2.bak.svg"
+			],
+			[
+				"coor",
+				"poker\\coordinates.txt"
+			],
+			[
+				"coordinatespy",
+				"poker\\coordinates.py"
+			],
+			[
+				"createsvg",
+				"poker\\tables\\1-create_svg_from_coordinates.py"
+			],
+			[
+				"coordin",
+				"poker\\coordinates.txt"
+			],
+			[
+				"table",
+				"table_setup.py"
+			],
+			[
+				"createcoor",
+				"poker\\tables\\create_svg_from_coordinates.py"
+			],
+			[
+				"gui_qt_ui_strategy_manager",
+				"poker\\gui\\gui_qt_ui_strategy_manager.ui"
+			],
+			[
+				"createsv",
+				"poker\\tools\\create_svg.py"
+			],
+			[
+				"tablesetup2",
+				"table_setup_2.py"
+			],
+			[
+				"txt",
+				"coordinates.txt"
+			],
+			[
+				"selectin",
+				"selectinwindow.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"C:\\Users\\JEAN-KLAUD\\Documents\\Arduino\\arduino_projects.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 69.0,
+		"last_filter": "stopton",
+		"selected_items":
+		[
+			[
+				"stopton",
+				"stopTone"
+			],
+			[
+				"sum",
+				"sum"
+			],
+			[
+				"init table",
+				"init_table"
+			],
+			[
+				"getinstruments",
+				"getInstruments"
+			],
+			[
+				"get_other",
+				"get_other_player_names"
+			],
+			[
+				"get_other_player_names",
+				"get_other_player_names"
+			],
+			[
+				"go_through_each_card",
+				"go_through_each_card"
+			],
+			[
+				"rect",
+				"Rect"
+			]
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 173.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
