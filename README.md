@@ -3,6 +3,9 @@
 ## But
  - Connecter les parties de fusée et activer sa mise à feu grâce à la "mallette de paramétrage (Russe)"
 
+## Info
+ - [Première ébauche](https://docs.google.com/document/d/1yoR8w5p_PIT4xyKm36WyRVBaFnUb5Wj9rwxSP0g8e_c/edit?usp=sharing)
+
 ## Setup
 
  - Sur arduino soft ajouter les libs mentionnées plus bas
