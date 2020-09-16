@@ -11,25 +11,28 @@ TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM);
 
 auto timer = timer_create_default();
 
-const int PIN_COUNT_RESERVOIR = 3;
-const int PINS_LED_RESERVOIR [PIN_COUNT_RESERVOIR]  = { 5, 12, 13 };// le 11 est pour bipbop
-const int PINS_RESERVOIR [PIN_COUNT_RESERVOIR] = { A0, A1, A2 };
+const int NOMBRE_FILS_RESERVOIR = 3;
+const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A0, A1, A2 };// Hauteur eau
+// const int 
+// 
+//  
+//    [NOMBRE_FILS_RESERVOIR]  = { 5, 12, 13 };// le 11 est pour bipbop
 
-const int PIN_COUNT_ELEMENTS = 4;
-const int PINS_LED_ELEMENTS [PIN_COUNT_ELEMENTS]  = { 7, 8, 9, 10 };
-const int PIN_READ_ELEMENTS = A3;
+const int NOMBRE_ELEMENTS_FUSEE = 4;
+const int PINS_LED_ELEMENTS [NOMBRE_ELEMENTS_FUSEE]  = { 7, 8, 9, 10 };
+const int PIN_DETECTION_ETAGES_SUPERIEURS = A3;
+const int PIN_DETECTION_ETAGE_INFERIEUR = 7;
 
 const int PIN_BUZZER = 11;
-const int PIN_LAUNCH = A4;
+const int PIN_LAUNCH = A4;// Led affiche possibilité de lancement (=tout est activé)
 const int PIN_BOUTON_SET_CODE = A6;// Pin Lecture analogique seulement !
 const int PIN_NEYMAN = A7;// Pin Lecture analogique seulement !
 
 const int PIN_FUMIGENE = 6;
 
-const int NB_CONF_STAGES = 7;
-const int NOMBRE_TOTAL_ELEMENTS = 4;
+const bool WITH_SOUND = false;
 
-int niveauAtteint[3]     = {0};
+bool niveauAtteint[3]     = {0};
 bool readyToLaunch       = false;
 bool neymanActive        = false;
 bool buttonPressed       = false;
@@ -42,8 +45,7 @@ char* code       = "00000000";// code de départ
 char* secretCode = retrieveSecretCode();
 
 bool buttonHold[8] = {false};
-
-
+int etagesConnectes[4] = {0};
 
 
 
@@ -52,39 +54,38 @@ bool buttonHold[8] = {false};
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 
 
-
 /* ------------------------------------ reservoir ------------------------------------ */
 
 // Lis et affiche la hauteur de carburant
 void hauteurReservoirCarburant() {
     static int hauteurEauValues[3] = {0};// par défaut, le pin est en l'air (> 0)
+    static int hauteurEauValues_prev[3] = {0};
+    
+    static int reservoirConf = -1;
+    static int reservoirConf_prev = -1;
 
-    int previousHauteurEauValues[3] = {0};
-    memcpy(previousHauteurEauValues, hauteurEauValues, sizeof(hauteurEauValues));
+    memcpy(hauteurEauValues_prev, hauteurEauValues, sizeof(hauteurEauValues));
 
-    // Lecture et Affichage A0-A2
-    for ( int pinNumber = 0 ; pinNumber < PIN_COUNT_RESERVOIR ; pinNumber++) {
-        // Lecture et Affichage
-
+    // Lecture A0-A2
+    for ( int pinNumber = 0 ; pinNumber < NOMBRE_FILS_RESERVOIR ; pinNumber++ ) {
         hauteurEauValues[pinNumber] = smooth(hauteurEauValues[pinNumber], analogRead(PINS_RESERVOIR[pinNumber]));
-        
-        int previousNiveauAtteint = niveauAtteint[pinNumber];
-        niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] > 50;
-        
-        if ( niveauAtteint[pinNumber] != previousNiveauAtteint ) {
-            tuding(800);
-        }
+        niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] > 300;
+    }
+    
+    reservoirConf_prev = reservoirConf;
+    reservoirConf = (niveauAtteint[2] << 2) + (niveauAtteint[1] << 1) + niveauAtteint[0];
 
-        digitalWrite(PINS_LED_RESERVOIR[pinNumber], niveauAtteint[pinNumber] ? HIGH : LOW);
-
+    // Serial.print("Reservoir changed: 1:"+String(hauteurEauValues[0])+" 2:"+String(hauteurEauValues[1])+" 3:"+String(hauteurEauValues[2])+"\n");
+    if ( reservoirConf != reservoirConf_prev ) {
+        // Serial.print("HAUTEUR RESERVOIR CHANGED !");
+        tuding(800 + (niveauAtteint[2] ? 400 : 0) + (niveauAtteint[1] ? 400 : 0) );
     }
 
-    reservoirPlein = ( sum(niveauAtteint, PIN_COUNT_RESERVOIR) == PIN_COUNT_RESERVOIR );
+    reservoirConf_prev = reservoirConf;
+
+    reservoirPlein = (niveauAtteint[0] && niveauAtteint[1] && niveauAtteint[2]);
 
 }
-
-
-
 
 /* ------------------------------------ elements fusee ------------------------------------ */
 
@@ -94,51 +95,51 @@ void hauteurReservoirCarburant() {
 // Plus il y a d'éléments connectés, plus la résistance baisse (éléments en parallèle)
 // donc plus on connecte d'éléments, plus la valeur lue sera élevée
 void connectionElementsFusee() {
-    static int elementsSmoothed = 1024;
+    static int etagesConf = -1;
+    static int etagesConf_prev = -1;
+    static int etagesSuperieurs = -1;
 
-    // tension liée au nombre d'éléments connectés
-    elementsSmoothed = smooth( elementsSmoothed , analogRead(PIN_READ_ELEMENTS));
+    etagesSuperieurs = smooth( etagesSuperieurs , analogRead(PIN_DETECTION_ETAGES_SUPERIEURS));
 
-    // Serial.print(String(elementsSmoothed)+"\n");
+    etagesConnectes[0] = digitalRead(PIN_DETECTION_ETAGE_INFERIEUR) == LOW ? 1 : 0;// Inter inversé (LOW = connecté)
+    // Serial.print("Resistance etages superieurs:"+String(etagesSuperieurs)+"\n");
 
-    static int thresholds[NB_CONF_STAGES] = {/* valeurs_de_palier */
-        /*843 => */834,// valeur qui va bien d'habitude: 834
-        /*826 => */726,
-        /*625 => */581,
-        /*537 => */475, // = (537+412) / 2
-        /*412 => */296,
-        /*180 => */90,
-        /*0 => */0
-    };
-    static int stages[NB_CONF_STAGES][4] = {// {etage 0, etage 1, etage 2, etage 3}}
-        {1, 1, 1, 1},
-        {0, 1, 1, 1},
-        {1, 1, 1, 0},
-        {0, 1, 1, 0},
-        {1, 1, 0, 0},
-        {0, 1, 0, 0},
-        {0, 0, 0, 0}
-    };
-    
-    
-    for(int i = 0; i < NB_CONF_STAGES; i++){
-        // si on trouve un palier proche de la mesure, on en déduit les éléments connectés (voir tableau stages)
-        if ( elementsSmoothed > thresholds[i] ) {
-            int nbElementsConnectesBefore = nbElementsConnectes;
-            
-            nbElementsConnectes = sum(stages[i], 4);
-
-            if ( nbElementsConnectesBefore != nbElementsConnectes ) {
-                tudiiWindows();
-            }
-
-            for(int j=0 ; j < NOMBRE_TOTAL_ELEMENTS ; j++){// cherche les éléments dans la liste d'éléments à activer.
-                digitalWrite(PINS_LED_ELEMENTS[j], stages[i][j] ? HIGH : LOW);
-            }
-
-            break;
-        }
+    if ( etagesSuperieurs <= 20) {        // etagesSuperieurs == 0  => débranché
+        etagesConnectes[0] = 0;
+        etagesConnectes[1] = 0;
+        etagesConnectes[2] = 0;
+        etagesConnectes[3] = 0;
+    } else if ( etagesSuperieurs <= 150) {// etagesSuperieurs == 40  => etages 1, 2
+        etagesConnectes[1] = 1;
+        etagesConnectes[2] = 1;
+        etagesConnectes[3] = 0;
+    } else if ( etagesSuperieurs <= 400) {// etagesSuperieurs == 323  => etages 1, 2, 3
+        etagesConnectes[1] = 1;
+        etagesConnectes[2] = 1;
+        etagesConnectes[3] = 1;
+    } else if ( etagesSuperieurs <= 700) {// etagesSuperieurs == 523 => etages 2
+        etagesConnectes[1] = 1;
+        etagesConnectes[2] = 0;
+        etagesConnectes[3] = 0;
+    } else if ( etagesSuperieurs <= 1000) {// etagesSuperieurs == 52 => etages 2
+        Serial.print("AIE !\n");
     }
+
+    // identifiant unique de la configuration des étages (détecte les changes)
+    etagesConf = (etagesConnectes[3] << 3) + (etagesConnectes[2] << 2) + (etagesConnectes[1] << 1) + etagesConnectes[0];
+
+    if ( etagesConf != etagesConf_prev ) {
+        Serial.print("etages connectes changed: "+String(etagesSuperieurs)+" 1:"+estConnecte(etagesConnectes[0])+" 2:"+estConnecte(etagesConnectes[1])+" 3:"+estConnecte(etagesConnectes[2])+" 4:"+estConnecte(etagesConnectes[3])+"\n");
+        tudiiWindows();
+    }
+
+    etagesConf_prev = etagesConf;
+
+    montrerEtagesConnectesSurBandeauLed(etagesConf);
+}
+
+String estConnecte(int etage) {
+    return etage == 1 ? "Y" : "N";
 }
 
 /* ------------------------------------ Fumigène ------------------------------------ */
@@ -169,7 +170,10 @@ void neyman() {
 
     neymanSmoothed = smooth(neymanSmoothed, analogRead(PIN_NEYMAN));
 
-    neymanActive = neymanSmoothed > 50;
+    neymanActive = neymanSmoothed < 50;
+
+    if ( neymanActive != neymanBefore ) 
+        Serial.print("Neyman changed: "+String(neymanActive));
 }
 
 void boutonAdminMemoriserCode() {
@@ -197,9 +201,9 @@ void changeChiffreCode () {
 
 void voyantLaunch() {
 
-    readyToLaunch = (nbElementsConnectes == NOMBRE_TOTAL_ELEMENTS) 
-        && reservoirPlein 
-        && codesMatch;
+    readyToLaunch = (nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) 
+    && reservoirPlein 
+    && codesMatch;
 
     digitalWrite(PIN_LAUNCH, readyToLaunch ? HIGH : LOW);
 }
@@ -210,33 +214,33 @@ void voyantLaunch() {
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 void setup() {
 
-    blingBling(); // lel
+    // blingBling(); // lel
 
     /**** fusée ****/
     pinMode(PIN_FUMIGENE, OUTPUT);
 
 
     /**** Mallette ****/
-    for ( int i = 0 ; i < PIN_COUNT_RESERVOIR ; i++) {
-        pinMode(PINS_LED_RESERVOIR[i], OUTPUT);
-    }
-
-    for ( int i = 0 ; i < PIN_COUNT_ELEMENTS ; i++) {
+    for ( int i = 0 ; i < NOMBRE_ELEMENTS_FUSEE ; i++) {
         pinMode(PINS_LED_ELEMENTS[i], OUTPUT);
     }
 
-    pinMode(PIN_BUZZER, OUTPUT);
+    if ( WITH_SOUND )
+        pinMode(PIN_BUZZER, OUTPUT);
+
+    pinMode(PIN_DETECTION_ETAGE_INFERIEUR, INPUT);
 
     pinMode(PIN_LAUNCH, OUTPUT);
     pinMode(PIN_BOUTON_SET_CODE, INPUT_PULLUP);
     pinMode(PIN_NEYMAN, INPUT_PULLUP);
 
 
-    // Serial.begin(9600);
+    Serial.begin(9600);
 }
 
 void loop() {
 
+    digitalWrite(PIN_FUMIGENE, LOW);
     // ------- fusée -------
     hauteurReservoirCarburant();
 
@@ -251,7 +255,7 @@ void loop() {
 
     voyantLaunch();
 
-    // Serial.print(String(nbElementsConnectes == NOMBRE_TOTAL_ELEMENTS) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
+    // Serial.print(String(nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
 
     // allume le fumi
     pouf();
