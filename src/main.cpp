@@ -1,6 +1,8 @@
 #include <TM1638plus.h>
-#include <timer.h>
+#include <arduino-timer.h>
 #include <EEPROM.h>
+
+#include "pitches.hpp"
 
 // init afficheur
 #define  STROBE_TM 2
@@ -32,20 +34,308 @@ const int PIN_FUMIGENE = 6;
 
 const bool WITH_SOUND = false;
 
-bool niveauAtteint[3]     = {0};
-bool readyToLaunch       = false;
-bool neymanActive        = false;
-bool buttonPressed       = false;
-int nbElementsConnectes  = 0;// tous les elements de la fusee sont connectée entre eux
-bool reservoirPlein      = false;
-bool codesMatch          = false;
-bool buzzing             = false;
-bool launched            = false;
-char* code       = "00000000";// code de départ
-char* secretCode = retrieveSecretCode();
+bool niveauAtteint[3] = {0};
+bool readyToLaunch = false;
+bool neymanActive = false;
+bool buttonPressed = false;
+int nbElementsConnectes = 0; // tous les elements de la fusee sont connectée entre eux
+bool reservoirPlein = false;
+bool codesMatch = false;
+bool buzzing = false;
+bool launched = false;
+char *code = "00000000"; // code de départ
+char *secretCode = NULL;
 
 bool buttonHold[8] = {false};
 int etagesConnectes[4] = {0};
+
+// MOVE TO afficheur.cpp
+
+void doLEDs(uint8_t value)
+{
+    for (uint8_t position = 0; position < 8; position++)
+    {
+        tm.setLED(position, value & 1);
+        value = value >> 1;
+    }
+}
+
+
+bool clearLEDs()
+{
+    doLEDs(0);
+    return false; // no repeat
+}
+
+void blingBling()
+{
+
+    tm.reset();
+    tm.displayText("YOURCODE");
+
+    int speed = 3;  // + = +lent
+    int steps = 18; // + = +fluide & +lent
+
+    for (int i = 0; i < 4; i++)
+    {
+        // decroissant
+        for (uint8_t brightness = 5; brightness-- > 1;)
+        {
+            // sub steps
+            for (int j = 0; j < steps; j++)
+            {
+                tm.brightness(brightness);
+                delay((speed * (steps - j)) / steps);
+                tm.brightness(brightness - 1);
+                delay((speed * j) / steps);
+            }
+        }
+        for (uint8_t brightness = 0; brightness < 5; brightness++)
+        {
+            // sub steps
+            for (int j = 0; j < steps; j++)
+            {
+                tm.brightness(brightness);
+                delay((speed * (steps - j)) / steps);
+                tm.brightness(brightness + 1);
+                delay((speed * j) / steps);
+            }
+        }
+    }
+
+    tm.brightness(3);
+}
+
+// répète blinkLeds tq les codes matchent
+void blinkLeds()
+{
+    timer.every(500, [](void *) -> bool
+                {
+
+        timer.in(250, [](void*) -> bool {
+            doLEDs(0);
+            return false;
+        });
+
+        doLEDs(codesMatch ? 255 : 0);
+
+        return codesMatch; });
+}
+
+void makeABuzz(bool condifion, int freq, int duration)
+{
+    if (condifion)
+    {
+        if (!buzzing)
+        {
+            buzzing = true;
+            tone(PIN_BUZZER, freq, duration);
+        }
+    }
+    else if (buzzing)
+    {
+        noTone(PIN_BUZZER);
+        buzzing = false;
+    }
+}
+
+void successTone()
+{
+    tone(PIN_BUZZER, 4000, 600);
+}
+
+void bouitBouit()
+{
+    for (int i = 0; i < 5; i++)
+    {
+        tone(PIN_BUZZER, 1200 + i * 100, 40);
+        delay(10);
+    }
+}
+
+void tuding(int min)
+{
+    tone(PIN_BUZZER, min, 40);
+    delay(50);
+    tone(PIN_BUZZER, min + 800, 40);
+}
+
+void tudiiWindows()
+{
+    tone(PIN_BUZZER, 300);
+    delay(250);
+    tone(PIN_BUZZER, 550);
+    delay(150);
+    noTone(PIN_BUZZER);
+}
+
+void notificationTone()
+{
+    tone(PIN_BUZZER, 1200, 40);
+}
+
+void boom()
+{
+    for (int i = 0; i < 100; i++)
+    {
+        tone(PIN_BUZZER, 1600 + i * 100, 40);
+        delay(10);
+    }
+}
+
+void neverGiveYouUp()
+{
+    int tempo = 130;
+
+    // change this to whichever pin you want to use
+    int buzzer = PIN_BUZZER;
+
+    int melody[] = {
+        NOTE_A4, 16, NOTE_B4, 16, NOTE_D5, 16, NOTE_B4, 16,
+        NOTE_FS5, -8, NOTE_FS5, -8, NOTE_E5, -4, NOTE_A4, 16, NOTE_B4, 16, NOTE_D5, 16, NOTE_B4, 16,
+
+        NOTE_E5, -8, NOTE_E5, -8, NOTE_D5, -8, NOTE_CS5, 16, NOTE_B4, -8, NOTE_A4, 16, NOTE_B4, 16, NOTE_D5, 16, NOTE_B4, 16, // 18
+        NOTE_D5, 4, NOTE_E5, 8, NOTE_CS5, -8, NOTE_B4, 16, NOTE_A4, 8, NOTE_A4, 8, NOTE_A4, 8,
+        NOTE_E5, 4, NOTE_D5, 2, NOTE_A4, 16, NOTE_B4, 16, NOTE_D5, 16, NOTE_B4, 16,
+        NOTE_FS5, -8, NOTE_FS5, -8, NOTE_E5, -4, NOTE_A4, 16, NOTE_B4, 16, NOTE_D5, 16, NOTE_B4, 16,
+        NOTE_A5, 4, NOTE_CS5, 8, NOTE_D5, -8, NOTE_CS5, 16, NOTE_B4, 8, NOTE_A4, 16, NOTE_B4, 16, NOTE_D5, 16, NOTE_B4, 16,
+
+        NOTE_D5, 4, NOTE_E5, 8, NOTE_CS5, -8, NOTE_B4, 16, NOTE_A4, 4, NOTE_A4, 8, // 23
+        NOTE_E5, 4, NOTE_D5, 2, REST, 4};
+
+    // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
+    // there are two values per note (pitch and duration), so for each note there are four bytes
+    int notes = sizeof(melody) / sizeof(melody[0]) / 2;
+
+    // this calculates the duration of a whole note in ms
+    int wholenote = (60000 * 4) / tempo;
+
+    int divider = 0, noteDuration = 0;
+    for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2)
+    {
+
+        // calculates the duration of each note
+        divider = melody[thisNote + 1];
+        if (divider > 0)
+        {
+            // regular note, just proceed
+            noteDuration = (wholenote) / divider;
+        }
+        else if (divider < 0)
+        {
+            // dotted notes are represented with negative durations!!
+            noteDuration = (wholenote) / abs(divider);
+            noteDuration *= 1.5; // increases the duration in half for dotted notes
+        }
+
+        // we only play the note for 90% of the duration, leaving 10% as a pause
+        tone(buzzer, melody[thisNote], noteDuration * 0.9);
+
+        // Wait for the specief duration before playing the next note.
+        delay(noteDuration);
+
+        // stop the waveform generation before the next note.
+        noTone(buzzer);
+    }
+}
+
+// MOVE TO: secret_code.cpp
+
+// affiche le code, vérifie s'il est juste
+void weHaveANewCode(char *newCode)
+{
+    tm.displayText(newCode);
+
+    codesMatch = String(code).equals(secretCode);
+
+    codesMatch
+        ? successTone()
+        : notificationTone();
+
+    if (codesMatch)
+    {
+        blinkLeds();
+    }
+}
+
+void saveSecretCode(char *theCode)
+{
+    char toStore[9];
+    strcpy(toStore, theCode);
+
+    EEPROM.put(100, toStore);
+
+    strcpy(secretCode, theCode);
+
+    weHaveANewCode(theCode);
+}
+
+char *retrieveSecretCode()
+{
+    static char stored[9];
+
+    EEPROM.get(100, stored);
+
+    return stored;
+}
+
+void ajouteChiffre(uint8_t value, char *theCode)
+{
+    for (uint8_t position = 0; position < 8; position++)
+    {
+        buttonPressed = (value & 1);
+
+        if (buttonPressed && !buttonHold[position])
+        {
+
+            // éteindre la led
+            theCode[position]++;
+
+            if (theCode[position] > ('9'))
+            {
+                theCode[position] = '0';
+            }
+
+            buttonHold[position] = true;
+
+            // affiche le bouton pressé
+            doLEDs(1 << position);
+
+            weHaveANewCode(theCode);
+        }
+
+        buttonHold[position] = buttonPressed;
+
+        value = value >> 1;
+    }
+}
+
+// TODO: MOVE TO led_stuff.cpp
+
+void montrerEtagesConnectesSurBandeauLed(int etagesConnectes)
+{
+    // @TODO: do it !
+}
+
+// TODO: MOVE TO tools.cpp
+// ajoute une valeur au tableau de moyennes et retourne la moyenne des 10 dernières valeurs.
+// évite les sautes de valeurs dues à des perturbations
+int smooth(int avg, int newValue, int amount = 20)
+{
+    return (avg * (amount - 1) + newValue) / amount;
+}
+
+int sum(int *arr, int size)
+{
+    int sum = 0;
+
+    for (int i = 0; i < size; i++)
+    {
+        sum += arr[i];
+    }
+
+    return sum;
+}
 
 
 
@@ -60,7 +350,7 @@ int etagesConnectes[4] = {0};
 void hauteurReservoirCarburant() {
     static int hauteurEauValues[3] = {0};// par défaut, le pin est en l'air (> 0)
     static int hauteurEauValues_prev[3] = {0};
-    
+
     static int reservoirConf = -1;
     static int reservoirConf_prev = -1;
 
@@ -71,7 +361,7 @@ void hauteurReservoirCarburant() {
         hauteurEauValues[pinNumber] = smooth(hauteurEauValues[pinNumber], analogRead(PINS_RESERVOIR[pinNumber]));
         niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] > 300;
     }
-    
+
     reservoirConf_prev = reservoirConf;
     reservoirConf = (niveauAtteint[2] << 2) + (niveauAtteint[1] << 1) + niveauAtteint[0];
 
@@ -89,7 +379,10 @@ void hauteurReservoirCarburant() {
 
 /* ------------------------------------ elements fusee ------------------------------------ */
 
-
+String estConnecte(int etage)
+{
+    return etage == 1 ? "Y" : "N";
+}
 
 // Lis et affiche le nombre de parties de fusée connectées
 // Plus il y a d'éléments connectés, plus la résistance baisse (éléments en parallèle)
@@ -138,9 +431,6 @@ void connectionElementsFusee() {
     montrerEtagesConnectesSurBandeauLed(etagesConf);
 }
 
-String estConnecte(int etage) {
-    return etage == 1 ? "Y" : "N";
-}
 
 /* ------------------------------------ Fumigène ------------------------------------ */
 
@@ -172,7 +462,7 @@ void neyman() {
 
     neymanActive = neymanSmoothed < 50;
 
-    if ( neymanActive != neymanBefore ) 
+    if ( neymanActive != neymanBefore )
         Serial.print("Neyman changed: "+String(neymanActive));
 }
 
@@ -187,22 +477,22 @@ void boutonAdminMemoriserCode() {
     }
 }
 
-// incrément des chiffres du code, affichage de la LED correspondante 
+// incrément des chiffres du code, affichage de la LED correspondante
 void changeChiffreCode () {
     uint8_t buttons = tm.readButtons();
 
     ajouteChiffre(buttons, code);
-    
+
     // les leds sont controlées par l'appui bouton ou la validité du code entré (blink)
     if ( !codesMatch ) {
-        doLEDs(buttons);  
+        doLEDs(buttons);
     }
 }
 
 void voyantLaunch() {
 
-    readyToLaunch = (nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) 
-    && reservoirPlein 
+    readyToLaunch = (nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE)
+    && reservoirPlein
     && codesMatch;
 
     digitalWrite(PIN_LAUNCH, readyToLaunch ? HIGH : LOW);
@@ -215,6 +505,7 @@ void voyantLaunch() {
 void setup() {
 
     // blingBling(); // lel
+    secretCode = retrieveSecretCode();
 
     /**** fusée ****/
     pinMode(PIN_FUMIGENE, OUTPUT);
@@ -262,4 +553,3 @@ void loop() {
 
     timer.tick();
 }
-
