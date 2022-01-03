@@ -13,9 +13,9 @@ auto timer = timer_create_default();
 
 const int NOMBRE_FILS_RESERVOIR = 3;
 const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A0, A1, A2 };// Hauteur eau
-// const int 
-// 
-//  
+// const int
+//
+//
 //    [NOMBRE_FILS_RESERVOIR]  = { 5, 12, 13 };// le 11 est pour bipbop
 
 const int NOMBRE_ELEMENTS_FUSEE = 4;
