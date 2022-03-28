@@ -25,10 +25,10 @@ const int PINS_LED_ELEMENTS [NOMBRE_ELEMENTS_FUSEE]  = { 7, 8, 9, 10 };
 const int PIN_DETECTION_ETAGES_SUPERIEURS = A3;
 const int PIN_DETECTION_ETAGE_INFERIEUR = 7;
 
+const int PIN_LAUNCH = A4; // Led affiche possibilité de lancement (=tout est activé)
 const int PIN_BUZZER = 11;
-const int PIN_LAUNCH = A4;// Led affiche possibilité de lancement (=tout est activé)
-const int PIN_BOUTON_SET_CODE = A6;// Pin Lecture analogique seulement !
-const int PIN_NEYMAN = A7;// Pin Lecture analogique seulement !
+const int PIN_BOUTON_SET_CODE = 10; // Pin Lecture analogique seulement !
+const int PIN_NEYMAN = 12;// D12
 
 const int PIN_FUMIGENE = 6;
 
@@ -44,7 +44,7 @@ bool codesMatch = false;
 bool buzzing = false;
 bool launched = false;
 char *code = "00000000"; // code de départ
-char *secretCode = NULL;
+char *secretCode = "00000001";
 
 bool buttonHold[8] = {false};
 int etagesConnectes[4] = {0};
@@ -109,8 +109,7 @@ void blingBling()
 // répète blinkLeds tq les codes matchent
 void blinkLeds()
 {
-    timer.every(500, [](void *) -> bool
-                {
+    timer.every(500, [](void *) -> bool {
 
         timer.in(250, [](void*) -> bool {
             doLEDs(0);
@@ -119,7 +118,8 @@ void blinkLeds()
 
         doLEDs(codesMatch ? 255 : 0);
 
-        return codesMatch; });
+        return codesMatch;
+    });
 }
 
 void makeABuzz(bool condifion, int freq, int duration)
@@ -451,30 +451,18 @@ void pouf () {
 /* ------------------------------------------------------ Mallette ------------------------------------------------------------ */
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 
-
-
-// le neyman n'a pas de pull-up/down => fait la moyenne de la sortie pour lisser les valeurs induites (patte en l'air)
-void neyman() {
-    static int neymanSmoothed = 0;
-    int neymanBefore = neymanActive;
-
-    neymanSmoothed = smooth(neymanSmoothed, analogRead(PIN_NEYMAN));
-
-    neymanActive = neymanSmoothed < 50;
-
-    if ( neymanActive != neymanBefore )
-        Serial.print("Neyman changed: "+String(neymanActive));
-}
-
-void boutonAdminMemoriserCode() {
-    bool setCode = !(analogRead(PIN_BOUTON_SET_CODE) > 500);
-
-    if ( setCode ) {
+bool boutonAdminMemoriserCode(void *argument)
+{
+    if (digitalRead(PIN_BOUTON_SET_CODE))
+    {
+        Serial.println("Saving secret code: " + String(code));
         doLEDs(255);
         saveSecretCode(code);
         delay(1500);
         doLEDs(0);
     }
+
+    return true;
 }
 
 // incrément des chiffres du code, affichage de la LED correspondante
@@ -498,18 +486,31 @@ void voyantLaunch() {
     digitalWrite(PIN_LAUNCH, readyToLaunch ? HIGH : LOW);
 }
 
+// Checks for neyman status change
+bool neymanCheck(void *argument)
+{
+    if (neymanActive != digitalRead(PIN_NEYMAN))
+    {
+        Serial.println("Neyman changed: " + String(neymanActive));
+        neymanActive = !neymanActive;
+    }
+
+    return true; // to repeat the action - false to stop
+}
 
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------ Main ---------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 void setup() {
+    // Serial can be used in callbacks, make sure to init it before.
+    Serial.begin(9600);
 
     // blingBling(); // lel
     secretCode = retrieveSecretCode();
 
     /**** fusée ****/
     pinMode(PIN_FUMIGENE, OUTPUT);
-
+    digitalWrite(PIN_FUMIGENE, LOW);
 
     /**** Mallette ****/
     for ( int i = 0 ; i < NOMBRE_ELEMENTS_FUSEE ; i++) {
@@ -519,37 +520,36 @@ void setup() {
     if ( WITH_SOUND )
         pinMode(PIN_BUZZER, OUTPUT);
 
+
     pinMode(PIN_DETECTION_ETAGE_INFERIEUR, INPUT);
 
     pinMode(PIN_LAUNCH, OUTPUT);
+    doLEDs(255);
+
     pinMode(PIN_BOUTON_SET_CODE, INPUT_PULLUP);
+    timer.every(500, boutonAdminMemoriserCode);
+
     pinMode(PIN_NEYMAN, INPUT_PULLUP);
+    timer.every(250, neymanCheck);
 
-
-    Serial.begin(9600);
 }
 
 void loop() {
 
-    digitalWrite(PIN_FUMIGENE, LOW);
     // ------- fusée -------
-    hauteurReservoirCarburant();
+    // hauteurReservoirCarburant();
 
-    connectionElementsFusee();
+    // connectionElementsFusee();
 
     // ------- mallette -------
-    changeChiffreCode();
+    // changeChiffreCode();
 
-    boutonAdminMemoriserCode();
-
-    neyman();
-
-    voyantLaunch();
+    // voyantLaunch();
 
     // Serial.print(String(nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
 
     // allume le fumi
-    pouf();
+    // pouf();
 
     timer.tick();
 }
