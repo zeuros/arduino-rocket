@@ -5,11 +5,12 @@
 #include "pitches.hpp"
 
 // init afficheur
-#define  STROBE_TM 2
-#define  CLOCK_TM 3
-#define  DIO_TM 4
+#define STROBE_TM 2     // strobe = GPIO connected to strobe line of module
+#define CLOCK_TM 3      // clock = GPIO connected to clock line of module
+#define DIO_TM 4        // data = GPIO connected to data line of module
+bool high_freq = false; // default false, If using a high freq CPU > ~100 MHZ set to true.
 
-TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM);
+TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM, high_freq);
 
 auto timer = timer_create_default();
 
