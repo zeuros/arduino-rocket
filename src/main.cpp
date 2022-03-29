@@ -505,6 +505,7 @@ bool neymanCheck(void *argument)
 void setup() {
     // Serial can be used in callbacks, make sure to init it before.
     Serial.begin(9600);
+    tm.displayBegin();
 
     // blingBling(); // lel
     secretCode = retrieveSecretCode();
@@ -543,7 +544,7 @@ void loop() {
     // connectionElementsFusee();
 
     // ------- mallette -------
-    // changeChiffreCode();
+    changeChiffreCode();
 
     // voyantLaunch();
 
