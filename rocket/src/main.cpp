@@ -3,7 +3,7 @@
 #include "arduino-timer.h"
 
 const int NOMBRE_FILS_RESERVOIR = 3;
-const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A0, A1, A2 };// Hauteur eau
+const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A1, A2, A3 };// Hauteur eau
 
 
 const int PIN_DETECTION_ETAGE_INFERIEUR = 6; // à mettre en pull-up
@@ -18,28 +18,11 @@ bool etagesConnectes[4] = {0};
 
 auto timer = timer_create_default();
 
-void montrerEtagesConnectesSurBandeauLed(int etagesConnectes)
-{
-    // @TODO: do it !
-}
-
 // ajoute une valeur au tableau de moyennes et retourne la moyenne des 10 dernières valeurs.
 // évite les sautes de valeurs dues à des perturbations
 int smooth(int avg, int newValue, int amount = 5)
 {
     return (avg * (amount - 1) + newValue) / amount;
-}
-
-int sum(int *arr, int size)
-{
-    int sum = 0;
-
-    for (int i = 0; i < size; i++)
-    {
-        sum += arr[i];
-    }
-
-    return sum;
 }
 
 
@@ -55,19 +38,23 @@ bool hauteurReservoirCarburant() {
 
     memcpy(hauteurEauValues_prev, hauteurEauValues, sizeof(hauteurEauValues));
 
-    // Lecture A0-A2
+    // Lecture A1-A3
+    // Values: when no water: 4096 (pulled up value), else 1477 <-> 1527 => check if below 2000
     for ( int pinNumber = 0 ; pinNumber < NOMBRE_FILS_RESERVOIR ; pinNumber++ ) {
         hauteurEauValues[pinNumber] = smooth(hauteurEauValues[pinNumber], analogRead(PINS_RESERVOIR[pinNumber]));
-        niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] > 300;
+        niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] < 2000;
     }
 
     reservoirConf_prev = reservoirConf;
     reservoirConf = (niveauAtteint[2] << 2) + (niveauAtteint[1] << 1) + niveauAtteint[0];
 
-    Serial.print("Reservoir changed: 1:"+String(hauteurEauValues[0])+" 2:"+String(hauteurEauValues[1])+" 3:"+String(hauteurEauValues[2])+"\n");
+    // DEBUG
+    // Serial.print("Reservoir level: 1:"+String(hauteurEauValues[0])+" 2:"+String(hauteurEauValues[1])+" 3:"+String(hauteurEauValues[2])+"\n");
     if ( reservoirConf != reservoirConf_prev ) {
-        // Serial.print("HAUTEUR RESERVOIR CHANGED !");
-        // tuding(800 + (niveauAtteint[2] ? 400 : 0) + (niveauAtteint[1] ? 400 : 0) );
+        Serial.print("Reservoir changed: MIN |");
+        for (auto &niveauOk : niveauAtteint)
+            Serial.print(niveauOk ? "=|" : " |");
+        Serial.print(" MAX\n");
     }
 
     reservoirConf_prev = reservoirConf;
@@ -119,8 +106,6 @@ bool connectionElementsFusee() {
     // }
 
     // etagesConf_prev = etageonf;
-
-    // montrerEtagesConnectesSurBandeauLed(etagesConf);
 }
 
 
@@ -152,6 +137,9 @@ void setup() {
     pinMode(PIN_DETECTION_ETAGE_INFERIEUR, INPUT_PULLUP);
     pinMode(PIN_DETECTION_ETAGES_SUPERIEURS, INPUT_PULLUP);
 
+    for (auto &pinReservoir: PINS_RESERVOIR)
+        pinMode(pinReservoir, INPUT_PULLUP);
+
     // timer.every(500, hauteurReservoirCarburant);
     // timer.every(500, connectionElementsFusee);
 
@@ -161,10 +149,11 @@ void setup() {
 
 void loop() {
 
-    // hauteurReservoirCarburant();
     connectionElementsFusee();
 
-    // allume le fumi
+    hauteurReservoirCarburant();
+
+    // allume le fumi (test)
     pouf();
 
     timer.tick();
