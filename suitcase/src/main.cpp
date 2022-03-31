@@ -276,6 +276,7 @@ void pouf () {
         launched = true;
     }
 
+    // Send fire signal !!!
     // digitalWrite(PIN_FUMIGENE, launch ? HIGH : LOW);
 }
 
@@ -368,6 +369,7 @@ void loop() {
 
     // voyantLaunch();
 
+    // reservoirPlein = (niveauAtteint[0] && niveauAtteint[1] && niveauAtteint[2]);
     // Serial.print(String(nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
 
     // allume le fumi

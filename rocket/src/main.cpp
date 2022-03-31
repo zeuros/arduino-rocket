@@ -5,14 +5,12 @@
 const int NOMBRE_FILS_RESERVOIR = 3;
 const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A1, A2, A3 };// Hauteur eau
 
-
 const int PIN_DETECTION_ETAGE_INFERIEUR = 6; // à mettre en pull-up
 const int PIN_DETECTION_ETAGES_SUPERIEURS = A0;
+
 const int PIN_FUMIGENE = 7;
 
 bool niveauAtteint[3] = {0};
-int nbElementsConnectes = 0; // tous les elements de la fusee sont connectée entre eux
-bool reservoirPlein = false;
 
 bool etagesConnectes[4] = {0};
 
@@ -38,10 +36,10 @@ bool hauteurReservoirCarburant() {
 
     memcpy(hauteurEauValues_prev, hauteurEauValues, sizeof(hauteurEauValues));
 
-    // Lecture A1-A3
-    // Values: when no water: 4096 (pulled up value), else 1477 <-> 1527 => check if below 2000
+    // Read: A1-A3
     for ( int pinNumber = 0 ; pinNumber < NOMBRE_FILS_RESERVOIR ; pinNumber++ ) {
         hauteurEauValues[pinNumber] = smooth(hauteurEauValues[pinNumber], analogRead(PINS_RESERVOIR[pinNumber]));
+        // Values: when no water: 4096 (pulled up value), else 1477 <-> 1527 => check if below 2000
         niveauAtteint[pinNumber] = hauteurEauValues[pinNumber] < 2000;
     }
 
@@ -50,16 +48,14 @@ bool hauteurReservoirCarburant() {
 
     // DEBUG
     // Serial.print("Reservoir level: 1:"+String(hauteurEauValues[0])+" 2:"+String(hauteurEauValues[1])+" 3:"+String(hauteurEauValues[2])+"\n");
-    if ( reservoirConf != reservoirConf_prev ) {
-        Serial.print("Reservoir changed: MIN |");
-        for (auto &niveauOk : niveauAtteint)
-            Serial.print(niveauOk ? "=|" : " |");
-        Serial.print(" MAX\n");
-    }
+    // if ( reservoirConf != reservoirConf_prev ) {
+    //     Serial.print("Reservoir changed: MIN |");
+    //     for (auto &niveauOk : niveauAtteint)
+    //         Serial.print(niveauOk ? "=|" : " |");
+    //     Serial.print(" MAX\n");
+    // }
 
     reservoirConf_prev = reservoirConf;
-
-    reservoirPlein = (niveauAtteint[0] && niveauAtteint[1] && niveauAtteint[2]);
 
 }
 
@@ -94,6 +90,8 @@ bool connectionElementsFusee() {
         etagesConnectes[2] = false;
         etagesConnectes[3] = false;
     }
+
+    // DEBUG
     // Serial.println(String(etagesSuperieurs));
 
     // identifiant unique de la configuration des étages (détecte les changes)
@@ -107,20 +105,6 @@ bool connectionElementsFusee() {
 
     // etagesConf_prev = etageonf;
 }
-
-
-/* ------------------------------------ Fumigène ------------------------------------ */
-
-void pouf () {
-    // bool launch = readyToLaunch && neymanActive;
-
-    // if ( launch && !launched) {
-    //     launched = true;
-    // }
-
-    digitalWrite(PIN_FUMIGENE, HIGH);
-}
-
 
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------ Main ---------------------------------------------------------------- */
@@ -140,11 +124,6 @@ void setup() {
     for (auto &pinReservoir: PINS_RESERVOIR)
         pinMode(pinReservoir, INPUT_PULLUP);
 
-    // timer.every(500, hauteurReservoirCarburant);
-    // timer.every(500, connectionElementsFusee);
-
-    // pinMode(PIN_LAUNCH, OUTPUT);
-
 }
 
 void loop() {
@@ -154,7 +133,7 @@ void loop() {
     hauteurReservoirCarburant();
 
     // allume le fumi (test)
-    pouf();
+    digitalWrite(PIN_FUMIGENE, HIGH);
 
     timer.tick();
 }
