@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <EEPROM.h>
+#include <Wire.h>
 #include "arduino-timer.h"
 
 const int NOMBRE_FILS_RESERVOIR = 3;
@@ -15,6 +15,11 @@ bool niveauAtteint[3] = {0};
 bool etagesConnectes[4] = {0};
 
 auto timer = timer_create_default();
+
+// communication stuff
+char t[20] = {'\0'}; // empty array where to put the numbers going to the master
+volatile int Val; // variable used by the master to sent data to the slave
+
 
 // ajoute une valeur au tableau de moyennes et retourne la moyenne des 10 dernières valeurs.
 // évite les sautes de valeurs dues à des perturbations
@@ -106,11 +111,24 @@ bool connectionElementsFusee() {
     // etagesConf_prev = etageonf;
 }
 
-/* ---------------------------------------------------------------------------------------------------------------------------- */
-/* ------------------------------------------------------ Main ---------------------------------------------------------------- */
-/* ---------------------------------------------------------------------------------------------------------------------------- */
+// what to do when receiving data from master
+void onReceiveCaseData(int howMany)
+{
+    int i = 0; // counter for each byte as it arrives
+    while (Wire.available())
+    {
+        t[i] = Wire.read(); // every character that arrives it put in order in the empty array "t"
+        i++;
+    }
+    Serial.println(t);
+}
+
+void requestEvent() // This Function is called when Master wants value from slave
+{
+    Wire.write("From SLAVE !"); // sends the given value
+}
+
 void setup() {
-    // Serial can be used in callbacks, make sure to init it before.
     Serial.begin(9600);
 
     /**** fusée ****/
@@ -124,6 +142,10 @@ void setup() {
     for (auto &pinReservoir: PINS_RESERVOIR)
         pinMode(pinReservoir, INPUT_PULLUP);
 
+    // Serial can be used in callbacks, make sure to init it before.
+    Wire.begin(9);                // join i2c bus with address #9
+    Wire.onReceive(onReceiveCaseData); // Function call when Slave receives value from master
+    Wire.onRequest(requestEvent); // Function call when Master request value from Slave
 }
 
 void loop() {

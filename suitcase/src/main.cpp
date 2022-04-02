@@ -1,3 +1,5 @@
+#include <Arduino.h>
+#include <Wire.h>
 #include <TM1638plus.h>
 #include <arduino-timer.h>
 #include <EEPROM.h>
@@ -6,11 +8,11 @@
 #define STROBE_TM 2     // strobe = GPIO connected to strobe line of module
 #define CLOCK_TM 3      // clock = GPIO connected to clock line of module
 #define DIO_TM 4        // data = GPIO connected to data line of module
-bool high_freq = false; // default false, If using a high freq CPU > ~100 MHZ set to true.
+#define HIGH_FREQ false // default false, If using a high freq CPU > ~100 MHZ set to true.
 
 #define NOMBRE_ELEMENTS_FUSEE 4 // strobe = GPIO connected to strobe line of module
 
-TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM, high_freq);
+TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM, HIGH_FREQ);
 
 auto timer = timer_create_default();
 
@@ -35,6 +37,9 @@ char *code = "00000000"; // code de départ
 char *secretCode = "00000001";
 
 bool buttonHold[8] = {false};
+
+// Communication stuff
+char t[20] = {'\0'};  // empty array where to put the numbers comming from the slave
 
 void doLEDs(uint8_t value)
 {
@@ -333,9 +338,29 @@ bool neymanCheck(void *argument)
     return true; // to repeat the action - false to stop
 }
 
-/* ---------------------------------------------------------------------------------------------------------------------------- */
-/* ------------------------------------------------------ Main ---------------------------------------------------------------- */
-/* ---------------------------------------------------------------------------------------------------------------------------- */
+void requestRocketData()
+{
+    Wire.requestFrom(9, 20); // request 1 byte from slave arduino (8)
+    int i = 0; // counter for each byte as it arrives
+    while (Wire.available())
+    {
+        t[i] = Wire.read(); // every character that arrives it put in order in the empty array "t"
+        i++;
+    }
+    Serial.println(t);
+}
+
+bool exchangeData(void *argument)
+{
+    Wire.beginTransmission(9); // transmit to slave device #9 
+    Wire.write("From MASTER !"); // sends the given value
+    Wire.endTransmission(); // stop transmitting
+
+    requestRocketData();
+
+    return true; // to repeat the action - false to stop
+}
+
 void setup() {
     // Serial can be used in callbacks, make sure to init it before.
     Serial.begin(9600);
@@ -361,6 +386,9 @@ void setup() {
     pinMode(PIN_NEYMAN, INPUT_PULLUP);
     timer.every(250, neymanCheck);
 
+    // Data exchanges between two cards
+    Wire.begin(); // join i2c bus as master (no address)
+    timer.every(1000, exchangeData);
 }
 
 void loop() {
@@ -374,6 +402,7 @@ void loop() {
 
     // allume le fumi
     // pouf();
+
 
     timer.tick();
 }
