@@ -3,6 +3,7 @@
 #include <TM1638plus.h>
 #include <arduino-timer.h>
 #include <EEPROM.h>
+#include <ArduinoJson.h>
 
 // init afficheur
 #define STROBE_TM 2     // strobe = GPIO connected to strobe line of module
@@ -11,6 +12,7 @@
 #define HIGH_FREQ false // default false, If using a high freq CPU > ~100 MHZ set to true.
 
 #define NOMBRE_ELEMENTS_FUSEE 4 // strobe = GPIO connected to strobe line of module
+#define MAX_I2C_MESSAGE_SIZE 15
 
 TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM, HIGH_FREQ);
 
@@ -338,25 +340,28 @@ bool neymanCheck(void *argument)
     return true; // to repeat the action - false to stop
 }
 
-void requestRocketData()
+String requestRocketData()
 {
-    Wire.requestFrom(9, 20); // request 1 byte from slave arduino (8)
-    int i = 0; // counter for each byte as it arrives
-    while (Wire.available())
-    {
-        t[i] = Wire.read(); // every character that arrives it put in order in the empty array "t"
-        i++;
-    }
-    Serial.println(t);
+    String result("");
+
+    Wire.requestFrom(8, MAX_I2C_MESSAGE_SIZE, true); // request 1 byte from slave arduino (8)
+    
+    String received(Wire.readStringUntil('\0'));
+
+    return received;
 }
 
 bool exchangeData(void *argument)
 {
-    Wire.beginTransmission(9); // transmit to slave device #9 
-    Wire.write("From MASTER !"); // sends the given value
-    Wire.endTransmission(); // stop transmitting
+    Wire.beginTransmission(8); // start transmit to slave arduino (8)
+    uint8_t payload[] = "MASTER";
+    Wire.write(payload, sizeof(payload)); // sends one byte converted POT value to slave
+    Wire.endTransmission();  // stop transmitting
 
-    requestRocketData();
+    String masterReceive = requestRocketData();
+    Serial.println("Master Received message: " + masterReceive);
+
+    delay(500);
 
     return true; // to repeat the action - false to stop
 }
@@ -387,7 +392,7 @@ void setup() {
     timer.every(250, neymanCheck);
 
     // Data exchanges between two cards
-    Wire.begin(); // join i2c bus as master (no address)
+    Wire.begin(); // join i2c bus as master
     timer.every(1000, exchangeData);
 }
 

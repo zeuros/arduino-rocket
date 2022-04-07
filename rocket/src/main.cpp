@@ -1,6 +1,9 @@
+#include <ArduinoJson.h>
 #include <Arduino.h>
 #include <Wire.h>
 #include "arduino-timer.h"
+
+#define MAX_I2C_MESSAGE_SIZE 15
 
 const int NOMBRE_FILS_RESERVOIR = 3;
 const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A1, A2, A3 };// Hauteur eau
@@ -15,14 +18,10 @@ bool niveauAtteint[3] = {0};
 bool etagesConnectes[4] = {0};
 
 auto timer = timer_create_default();
-
-// communication stuff
-char t[20] = {'\0'}; // empty array where to put the numbers going to the master
-volatile int Val; // variable used by the master to sent data to the slave
-
+String suitcaseStatuses = "codeOk:false,neymanActive:false";
 
 // ajoute une valeur au tableau de moyennes et retourne la moyenne des 10 dernières valeurs.
-// évite les sautes de valeurs dues à des perturbations
+    // évite les sautes de valeurs dues à des perturbations
 int smooth(int avg, int newValue, int amount = 5)
 {
     return (avg * (amount - 1) + newValue) / amount;
@@ -111,21 +110,19 @@ bool connectionElementsFusee() {
     // etagesConf_prev = etageonf;
 }
 
-// what to do when receiving data from master
-void onReceiveCaseData(int howMany)
+
+void receiveFromSuitCase(int howMany) // This Function is called when Slave receives value from master
 {
-    int i = 0; // counter for each byte as it arrives
-    while (Wire.available())
-    {
-        t[i] = Wire.read(); // every character that arrives it put in order in the empty array "t"
-        i++;
-    }
-    Serial.println(t);
+    suitcaseStatuses = Wire.readStringUntil('\0');
+
+    // Serial.println("received " + received);
 }
 
 void requestEvent() // This Function is called when Master wants value from slave
 {
-    Wire.write("From SLAVE !"); // sends the given value
+    // Serial.println("request event");
+    uint8_t payload[] = "slave";
+    Wire.write(payload, sizeof(payload)); // sends one byte converted POT value to slave
 }
 
 void setup() {
@@ -143,8 +140,8 @@ void setup() {
         pinMode(pinReservoir, INPUT_PULLUP);
 
     // Serial can be used in callbacks, make sure to init it before.
-    Wire.begin(9);                // join i2c bus with address #9
-    Wire.onReceive(onReceiveCaseData); // Function call when Slave receives value from master
+    Wire.begin(8);                // Begins I2C communication with Slave Address as 8 at pin (A4,A5)
+    Wire.onReceive(receiveFromSuitCase); // Function call when Slave receives value from master
     Wire.onRequest(requestEvent); // Function call when Master request value from Slave
 }
 
