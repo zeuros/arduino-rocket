@@ -1,9 +1,8 @@
-#include <ArduinoJson.h>
-#include <Arduino.h>
+
 #include <Wire.h>
 #include "arduino-timer.h"
 
-#define MAX_I2C_MESSAGE_SIZE 15
+#define MAX_I2C_MESSAGE_SIZE 32
 
 const int NOMBRE_FILS_RESERVOIR = 3;
 const int PINS_RESERVOIR [NOMBRE_FILS_RESERVOIR] = { A1, A2, A3 };// Hauteur eau
@@ -17,8 +16,11 @@ bool niveauAtteint[3] = {0};
 
 bool etagesConnectes[4] = {0};
 
-auto timer = timer_create_default();
-String suitcaseStatuses = "codeOk:false,neymanActive:false";
+// auto timer = timer_create_default();
+
+// suitcase data
+int codesMatch = 0;
+int neymanActive = 1;
 
 // ajoute une valeur au tableau de moyennes et retourne la moyenne des 10 dernières valeurs.
     // évite les sautes de valeurs dues à des perturbations
@@ -110,19 +112,40 @@ bool connectionElementsFusee() {
     // etagesConf_prev = etageonf;
 }
 
-
+// TODO: debug !
 void receiveFromSuitCase(int howMany) // This Function is called when Slave receives value from master
 {
-    suitcaseStatuses = Wire.readStringUntil('\0');
+    char suitcaseStatuses[MAX_I2C_MESSAGE_SIZE] = {'\0'};
 
-    // Serial.println("received " + received);
+    for (int i = 0; i < howMany; ++i)
+    {
+        suitcaseStatuses[i] = Wire.read(); // read one character from the I2C
+    }
+
+    sscanf((char *)suitcaseStatuses, "%d,%d", &codesMatch, &neymanActive);
+
+    // Serial.println((char *)suitcaseStatuses);
 }
 
 void requestEvent() // This Function is called when Master wants value from slave
 {
-    // Serial.println("request event");
-    uint8_t payload[] = "slave";
-    Wire.write(payload, sizeof(payload)); // sends one byte converted POT value to slave
+    char rocketStatus[32];
+    char etages[] = "0000";
+    char carburant[] = "000";
+
+    for (unsigned int i = 0; i < sizeof(etagesConnectes); i++)
+        etages[i] = etagesConnectes[i] ? '1' : '0';
+
+    for (unsigned int i = 0; i < sizeof(niveauAtteint); i++)
+        carburant[i] = niveauAtteint[i] ? '1' : '0';
+
+
+    sprintf(rocketStatus, "%s,%s", etages, carburant);
+
+    Serial.println(rocketStatus);
+
+    // Wire.write(toto, sizeof toto); // sends one byte converted POT value to slave
+    Wire.write(rocketStatus);
 }
 
 void setup() {
@@ -140,6 +163,7 @@ void setup() {
         pinMode(pinReservoir, INPUT_PULLUP);
 
     // Serial can be used in callbacks, make sure to init it before.
+    Wire.setClock(400000);
     Wire.begin(8);                // Begins I2C communication with Slave Address as 8 at pin (A4,A5)
     Wire.onReceive(receiveFromSuitCase); // Function call when Slave receives value from master
     Wire.onRequest(requestEvent); // Function call when Master request value from Slave
@@ -152,7 +176,7 @@ void loop() {
     hauteurReservoirCarburant();
 
     // allume le fumi (test)
-    digitalWrite(PIN_FUMIGENE, HIGH);
+    // digitalWrite(PIN_FUMIGENE, HIGH);
 
-    timer.tick();
+    // timer.tick();
 }

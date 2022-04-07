@@ -1,9 +1,7 @@
-#include <Arduino.h>
 #include <Wire.h>
 #include <TM1638plus.h>
 #include <arduino-timer.h>
 #include <EEPROM.h>
-#include <ArduinoJson.h>
 
 // init afficheur
 #define STROBE_TM 2     // strobe = GPIO connected to strobe line of module
@@ -12,7 +10,7 @@
 #define HIGH_FREQ false // default false, If using a high freq CPU > ~100 MHZ set to true.
 
 #define NOMBRE_ELEMENTS_FUSEE 4 // strobe = GPIO connected to strobe line of module
-#define MAX_I2C_MESSAGE_SIZE 15
+#define MAX_I2C_MESSAGE_SIZE 32
 
 TM1638plus tm(STROBE_TM, CLOCK_TM, DIO_TM, HIGH_FREQ);
 
@@ -33,6 +31,8 @@ bool buttonPressed = false;
 int nbElementsConnectes = 0; // tous les elements de la fusee sont connectée entre eux
 bool reservoirPlein = false;
 bool codesMatch = false;
+char *etagesConnectes = "0000";
+char *reservoirRempli = "000";
 bool buzzing = false;
 bool launched = false;
 char *code = "00000000"; // code de départ
@@ -340,28 +340,46 @@ bool neymanCheck(void *argument)
     return true; // to repeat the action - false to stop
 }
 
-String requestRocketData()
+// Mapping between received string and local values describing rocket statuses
+void requestAndSetRocketData()
 {
-    String result("");
+    uint8_t rocketStatus[32] = {0};
 
-    Wire.requestFrom(8, MAX_I2C_MESSAGE_SIZE, true); // request 1 byte from slave arduino (8)
-    
-    String received(Wire.readStringUntil('\0'));
+    Wire.requestFrom(8, MAX_I2C_MESSAGE_SIZE); // request 1 byte from slave arduino (8)
 
-    return received;
+    Wire.readBytes(rocketStatus, MAX_I2C_MESSAGE_SIZE);
+
+    // "0111(etagesConnectes),110(reservoirRempli)"
+    etagesConnectes = strtok((char *)rocketStatus, ",");
+    reservoirRempli[4] = '\0';
+    reservoirRempli = strtok(NULL, ",");
+    reservoirRempli[3] = '\0';
+
+    // Serial.print("Etages connectes: ");
+    // Serial.print(etagesConnectes);
+    // Serial.print(" Niveau reservoir: ");
+    // Serial.println(reservoirRempli);
+}
+
+void sendSuitcaseStatuses()
+{
+    char suitcaseStatuses[MAX_I2C_MESSAGE_SIZE] = {'\0'};
+
+    sprintf(suitcaseStatuses, "%d,%d", +codesMatch, +neymanActive);
+    // Serial.print("sending ");
+    // Serial.println(suitcaseStatuses);
+
+    Wire.beginTransmission(8); // start transmit to slave arduino (8)
+    Wire.write(suitcaseStatuses); // sends string to slave
+    Wire.endTransmission(); // stop transmitting
 }
 
 bool exchangeData(void *argument)
 {
-    Wire.beginTransmission(8); // start transmit to slave arduino (8)
-    uint8_t payload[] = "MASTER";
-    Wire.write(payload, sizeof(payload)); // sends one byte converted POT value to slave
-    Wire.endTransmission();  // stop transmitting
 
-    String masterReceive = requestRocketData();
-    Serial.println("Master Received message: " + masterReceive);
+    sendSuitcaseStatuses();
 
-    delay(500);
+    requestAndSetRocketData();
 
     return true; // to repeat the action - false to stop
 }
@@ -392,8 +410,9 @@ void setup() {
     timer.every(250, neymanCheck);
 
     // Data exchanges between two cards
+    Wire.setClock(400000);
     Wire.begin(); // join i2c bus as master
-    timer.every(1000, exchangeData);
+    timer.every(300, exchangeData);
 }
 
 void loop() {
