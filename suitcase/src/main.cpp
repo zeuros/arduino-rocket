@@ -31,8 +31,8 @@ bool buttonPressed = false;
 int nbElementsConnectes = 0; // tous les elements de la fusee sont connectée entre eux
 bool reservoirPlein = false;
 bool codesMatch = false;
-char *etagesConnectes = "0000";
-char *reservoirRempli = "000";
+String etagesConnectes("0000");
+String reservoirRempli("000");
 bool buzzing = false;
 bool launched = false;
 char *code = "00000000"; // code de départ
@@ -246,11 +246,7 @@ void ajouteChiffre(uint8_t value, char *theCode)
 }
 
 // TODO: MOVE TO led_stuff.cpp
-
-void montrerEtagesConnectesSurBandeauLed(int etagesConnectes)
-{
-    // @TODO: do it !
-}
+// void montrerEtagesConnectesSurBandeauLed();
 
 // TODO: MOVE TO tools.cpp
 // ajoute une valeur au tableau de moyennes et retourne la moyenne des 10 dernières valeurs.
@@ -297,7 +293,7 @@ bool boutonAdminMemoriserCode(void *argument)
 {
     if (digitalRead(PIN_BOUTON_SET_CODE))
     {
-        Serial.println("Saving secret code: " + String(code));
+        Serial.println(String("Saving secret code: ") + code);
         doLEDs(255);
         saveSecretCode(code);
         delay(1500);
@@ -333,7 +329,7 @@ bool neymanCheck(void *argument)
 {
     if (neymanActive != digitalRead(PIN_NEYMAN))
     {
-        Serial.println("Neyman changed: " + String(neymanActive));
+        Serial.println(String("Neyman changed: ") + neymanActive);
         neymanActive = !neymanActive;
     }
 
@@ -349,16 +345,13 @@ void requestAndSetRocketData()
 
     Wire.readBytes(rocketStatus, MAX_I2C_MESSAGE_SIZE);
 
-    // "0111(etagesConnectes),110(reservoirRempli)"
+    // "0111(etagesConnectes),110(reservoirRempli),"
     etagesConnectes = strtok((char *)rocketStatus, ",");
-    reservoirRempli[4] = '\0';
+    etagesConnectes[4] = '\0'; // 0 char to finish the string
     reservoirRempli = strtok(NULL, ",");
     reservoirRempli[3] = '\0';
 
-    // Serial.print("Etages connectes: ");
-    // Serial.print(etagesConnectes);
-    // Serial.print(" Niveau reservoir: ");
-    // Serial.println(reservoirRempli);
+    // Serial.println(String("Etages connectes: ") + etagesConnectes + " Niveau reservoir: " + reservoirRempli);
 }
 
 void sendSuitcaseStatuses()
@@ -366,8 +359,7 @@ void sendSuitcaseStatuses()
     char suitcaseStatuses[MAX_I2C_MESSAGE_SIZE] = {'\0'};
 
     sprintf(suitcaseStatuses, "%d,%d", +codesMatch, +neymanActive);
-    // Serial.print("sending ");
-    // Serial.println(suitcaseStatuses);
+    // Serial.println(String("sending ") + suitcaseStatuses);
 
     Wire.beginTransmission(8); // start transmit to slave arduino (8)
     Wire.write(suitcaseStatuses); // sends string to slave
@@ -422,7 +414,7 @@ void loop() {
     // voyantLaunch();
 
     // reservoirPlein = (niveauAtteint[0] && niveauAtteint[1] && niveauAtteint[2]);
-    // Serial.print(String(nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
+    // Serial.println(String(nbElementsConnectes == NOMBRE_ELEMENTS_FUSEE) + " " + reservoirPlein + " " + codesMatch + " " +readyToLaunch + " " + neymanActive + " " + (readyToLaunch && neymanActive) + "\n");
 
     // allume le fumi
     // pouf();

@@ -124,7 +124,7 @@ void receiveFromSuitCase(int howMany) // This Function is called when Slave rece
 
     sscanf((char *)suitcaseStatuses, "%d,%d", &codesMatch, &neymanActive);
 
-    // Serial.println((char *)suitcaseStatuses);
+    // Serial.println(suitcaseStatuses);
 }
 
 void requestEvent() // This Function is called when Master wants value from slave
@@ -140,7 +140,7 @@ void requestEvent() // This Function is called when Master wants value from slav
         carburant[i] = niveauAtteint[i] ? '1' : '0';
 
 
-    sprintf(rocketStatus, "%s,%s", etages, carburant);
+    sprintf(rocketStatus, "%s,%s,", etages, carburant);
 
     Serial.println(rocketStatus);
 
@@ -153,7 +153,7 @@ void setup() {
 
     /**** fusée ****/
     pinMode(PIN_FUMIGENE, OUTPUT);
-    digitalWrite(PIN_FUMIGENE, LOW);
+    digitalWrite(PIN_FUMIGENE, HIGH);
 
     // Etage inferieur LOW -> HIGH (because of pullup) when plugged
     pinMode(PIN_DETECTION_ETAGE_INFERIEUR, INPUT_PULLUP);
